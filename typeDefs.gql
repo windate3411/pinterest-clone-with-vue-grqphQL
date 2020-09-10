@@ -1,0 +1,31 @@
+type User {
+  _id: ID
+  username: String!
+  email: String!
+  password: String!
+  avatar: String
+  joinDate: String
+  favorites: [Post]
+}
+
+type Post {
+  title: String!
+  imgUrl: String!
+  categories: [String]!
+  description: String!
+  createdDate: String
+  likes: Int
+  createdBy: User!
+  messages: [Message]
+}
+
+type Message {
+  _id: ID
+  messageBody: String!
+  messageDate: String
+  messageUser: User!
+}
+
+type Query {
+  getUsers: [User]
+}
