@@ -6,6 +6,7 @@ const path = require('path')
 
 const filePath = path.join(__dirname, 'typeDefs.gql')
 const typeDefs = fs.readFileSync(filePath, 'utf-8')
+const resolvers = require('./resolvers')
 
 require('dotenv').config({ path: 'variables.env' })
 
@@ -25,6 +26,7 @@ const server = new ApolloServer({
     User,
     Post,
   },
+  resolvers,
 })
 
 server.listen().then(({ url }) => {
