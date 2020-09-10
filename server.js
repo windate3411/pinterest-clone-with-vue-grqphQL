@@ -2,6 +2,8 @@ const { ApolloServer, gql } = require('apollo-server')
 const moogoose = require('mongoose')
 
 require('dotenv').config({ path: 'variables.env' })
+const User = require('./models/User')
+const Post = require('./models/Post')
 
 moogoose
   .connect(process.env.MONGO_URI, {
@@ -23,7 +25,13 @@ const typeDefs = gql`
   }
 `
 
-const server = new ApolloServer({ typeDefs })
+const server = new ApolloServer({
+  typeDefs,
+  context: {
+    User,
+    Post,
+  },
+})
 
 server.listen().then(({ url }) => {
   console.log(`server is running on ${url}`)
