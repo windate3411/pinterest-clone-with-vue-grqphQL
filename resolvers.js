@@ -1,4 +1,15 @@
+const User = require('./models/User')
+
 module.exports = {
+  Query: {
+    getPosts: async (_, args, { Post }) => {
+      const posts = await Post.find({}).sort({ createdDate: 'desc' }).populate({
+        path: 'createdBy',
+        model: 'User',
+      })
+      return posts
+    },
+  },
   Mutation: {
     signupUser: async (_, { username, email, password }, { User }) => {
       const user = await User.findOne({ username })
