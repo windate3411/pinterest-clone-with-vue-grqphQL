@@ -1,6 +1,13 @@
 <template>
-  <div id="app">
-    <h1>App</h1>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-main>
+      <router-view></router-view>
+    </v-main>
+  </v-app>
 </template>
+
+<script>
+export default {
+  name: 'App',
+}
+</script>
