@@ -1,13 +1,11 @@
 <template>
   <v-container>
-    <h1>Home2</h1>
+    <h1>Profile</h1>
   </v-container>
 </template>
 
 <script>
-// @ is an alias to /src
-
 export default {
-  name: 'Home',
+  name: 'Profile',
 }
 </script>
