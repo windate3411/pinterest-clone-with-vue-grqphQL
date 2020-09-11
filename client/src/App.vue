@@ -1,13 +1,13 @@
 <template>
   <v-app style="background-color:#E3E3EE">
     <Navbar />
-    <v-content>
+    <v-main>
       <v-container class="mt-4">
         <transition name="fade">
           <router-view></router-view>
         </transition>
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 

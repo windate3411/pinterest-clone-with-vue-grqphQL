@@ -57,7 +57,7 @@
       <v-spacer></v-spacer>
 
       <!-- right-side-menu -->
-      <v-menu offset-y="true" transition="slide-y-transition">
+      <v-menu offset-y transition="slide-y-transition">
         <template v-slot:activator="{ on }">
           <v-btn text v-on="on" color="white">
             <v-icon left>mdi-chevron-down</v-icon>
