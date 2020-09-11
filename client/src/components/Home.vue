@@ -2,6 +2,7 @@
   <v-container>
     <h1>Home2</h1>
     <ul v-for="post in getPosts" :key="post.id">
+      <li>{{ post._id }}</li>
       <li>{{ post.title }}</li>
     </ul>
   </v-container>
@@ -18,6 +19,7 @@ export default {
       query: gql`
         query {
           getPosts {
+            _id
             description
             title
           }

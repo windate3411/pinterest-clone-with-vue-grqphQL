@@ -9,6 +9,7 @@ type User {
 }
 
 type Post {
+  _id: ID
   title: String!
   imgUrl: String!
   categories: [String]!
