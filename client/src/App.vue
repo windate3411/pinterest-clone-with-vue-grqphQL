@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app style="background-color:#E3E3EE">
     <Navbar />
     <v-content>
       <v-container class="mt-4">
@@ -19,3 +19,5 @@ export default {
   },
 }
 </script>
+
+<style lang="stylus" scoped></style>
