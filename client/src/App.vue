@@ -3,7 +3,9 @@
     <Navbar />
     <v-content>
       <v-container class="mt-4">
-        <router-view></router-view>
+        <transition name="fade">
+          <router-view></router-view>
+        </transition>
       </v-container>
     </v-content>
   </v-app>
@@ -20,4 +22,17 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+
+.fade-enter-active
+.fade-leave-active
+  transition all 0.25s
+
+.fade-enter-active
+  transition-delay 0.25s
+
+.fade-enter
+.fade-leave-active
+  opacity 0
+  transform translateX(-25px)
+</style>
