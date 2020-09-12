@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-overlay v-if="!posts.length">
+    <v-overlay v-if="loading">
       <v-progress-circular indeterminate size="128">Loading</v-progress-circular>
     </v-overlay>
     <v-row v-else>
@@ -26,7 +26,7 @@ export default {
     ...mapActions(["getPosts"]),
   },
   computed: {
-    ...mapGetters(["posts"]),
+    ...mapGetters(["posts", "loading"]),
   },
   created() {
     this.getPosts();
