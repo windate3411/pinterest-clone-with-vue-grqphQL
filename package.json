@@ -16,6 +16,7 @@
     "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
     "graphql": "^15.3.0",
+    "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "mongoose": "^5.10.4"
   }

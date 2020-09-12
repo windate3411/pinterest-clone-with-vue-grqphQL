@@ -27,6 +27,10 @@ type Message {
   messageUser: User!
 }
 
+type Token {
+  token: String!
+}
+
 type Query {
   getPosts: [Post]
 }
@@ -39,6 +43,6 @@ type Mutation {
     categories: [String!]
     creatorId: ID!
   ): Post!
-  signupUser(username: String!, email: String!, password: String!): User!
-  signinUser(username: String!, password: String!): User!
+  signupUser(username: String!, email: String!, password: String!): Token
+  signinUser(username: String!, password: String!): Token
 }
