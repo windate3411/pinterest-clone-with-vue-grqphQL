@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { defaultClient as apolloClient } from '../main.js'
-import { GET_POSTS } from '../queries.js'
+import { GET_POSTS, USER_SIGNIN } from '../queries.js'
 
 Vue.use(Vuex)
 
@@ -32,6 +32,19 @@ export default new Vuex.Store({
         .catch((err) => {
           console.log(err)
           commit('SET_LOADING', false)
+        })
+    },
+    signinUser: ({ commit }, payload) => {
+      apolloClient
+        .mutate({
+          mutation: USER_SIGNIN,
+          variables: payload,
+        })
+        .then(({ data }) => {
+          console.log(data.signinUser)
+        })
+        .catch((err) => {
+          console.log(err)
         })
     },
   },
