@@ -41,6 +41,7 @@ export default new Vuex.Store({
           variables: payload,
         })
         .then(({ data }) => {
+          localStorage.setItem('token', data.signinUser.token)
           console.log(data.signinUser)
         })
         .catch((err) => {
