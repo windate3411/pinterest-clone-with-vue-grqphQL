@@ -28,6 +28,7 @@ const getUser = async (token) => {
     try {
       return await jwt.verify(token, process.env.SECRET)
     } catch (error) {
+      console.log(error)
       throw new AuthenticationError(
         'The access token has been expired! Please login again!'
       )

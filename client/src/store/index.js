@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { defaultClient as apolloClient } from '../main.js'
 import { GET_POSTS, USER_SIGNIN, GET_CURRENT_USER } from '../queries.js'
-
+import router from '../router'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -46,6 +46,7 @@ export default new Vuex.Store({
         })
         .then(({ data }) => {
           localStorage.setItem('token', data.signinUser.token)
+          router.push('/')
           console.log(data.signinUser)
         })
         .catch((err) => {
