@@ -1,4 +1,5 @@
 const User = require('./models/User')
+const bcrypt = require('bcrypt')
 
 module.exports = {
   Query: {
@@ -11,6 +12,13 @@ module.exports = {
     },
   },
   Mutation: {
+    signinUser: async (_, { username, password }, { User }) => {
+      const user = await User.findOne({ username })
+      if (!user) throw new Error('User not found')
+      const isValidPassword = await bcrypt.compare(password, user.password)
+      if (!isValidPassword) throw new Error('Invalid Password')
+      return user
+    },
     signupUser: async (_, { username, email, password }, { User }) => {
       const user = await User.findOne({ username })
       if (user) throw new Error('Username already exists')
