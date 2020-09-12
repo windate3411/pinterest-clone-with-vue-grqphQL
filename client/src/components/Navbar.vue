@@ -21,7 +21,7 @@
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
-          <v-list-item class="mt-2" v-if="currentUser">
+          <v-list-item class="mt-2" v-if="currentUser" @click="signoutUser">
             <v-icon left>mdi-exit-to-app</v-icon>
             <span>Sign Out</span>
           </v-list-item>
@@ -66,7 +66,7 @@
             </v-list-item-title>
           </v-list-item>
           <v-divider></v-divider>
-          <v-list-item v-if="currentUser">
+          <v-list-item v-if="currentUser" @click="signoutUser">
             <v-icon left class="hidden-sm-and-down">mdi-exit-to-app</v-icon>
             <span>Sign Out</span>
           </v-list-item>
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   data() {
@@ -85,6 +85,9 @@ export default {
       sidebarShown: false,
       sideBarSeletedItem: 0,
     };
+  },
+  methods: {
+    ...mapActions(["signoutUser"]),
   },
   computed: {
     ...mapGetters(["currentUser"]),

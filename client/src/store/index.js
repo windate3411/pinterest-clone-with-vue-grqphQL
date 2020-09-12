@@ -70,6 +70,13 @@ export default new Vuex.Store({
           console.log(err)
         })
     },
+    signoutUser: async ({ commit }) => {
+      commit('SET_CURRENT_USER', null)
+      localStorage.setItem('token', '')
+      // end apollo session
+      await apolloClient.resetStore()
+      router.push('/signin')
+    },
   },
   modules: {},
   getters: {
