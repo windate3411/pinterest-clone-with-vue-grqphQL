@@ -70,5 +70,16 @@ export default {
       });
     },
   },
+  computed: {
+    ...mapGetters(["currentUser"]),
+  },
+  watch: {
+    currentUser: {
+      handler: function (value, oldValue) {
+        if (value) this.$router.push("/");
+      },
+      immediate: true,
+    },
+  },
 };
 </script>
