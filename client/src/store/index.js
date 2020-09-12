@@ -9,6 +9,7 @@ export default new Vuex.Store({
   state: {
     posts: [],
     loading: false,
+    currentUser: null,
   },
   mutations: {
     SET_POSTS: (state, payload) => {
@@ -16,6 +17,9 @@ export default new Vuex.Store({
     },
     SET_LOADING: (state, payload) => {
       state.loading = payload
+    },
+    SET_CURRENT_USER: (state, payload) => {
+      state.currentUser = payload
     },
   },
   actions: {
@@ -56,6 +60,7 @@ export default new Vuex.Store({
         })
         .then(({ data }) => {
           commit('SET_LOADING', false)
+          commit('SET_CURRENT_USER', data.getCurrentUser)
           console.log(data.getCurrentUser)
         })
         .catch((err) => {
