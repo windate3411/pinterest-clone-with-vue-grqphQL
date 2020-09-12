@@ -18,6 +18,16 @@ module.exports = {
       })
       return posts
     },
+    getCurrentUser: async (_, args, { User, currentUser }) => {
+      if (!currentUser) return null
+      const user = await User.findOne({
+        username: currentUser.username,
+      }).populate({
+        path: 'favorites',
+        model: 'Post',
+      })
+      return user
+    },
   },
   Mutation: {
     signinUser: async (_, { username, password }, { User }) => {

@@ -26,8 +26,7 @@ moogoose
 const getUser = async (token) => {
   if (token) {
     try {
-      let user = await jwt.verify(token, process.env.SECRET)
-      console.log(user)
+      return await jwt.verify(token, process.env.SECRET)
     } catch (error) {
       throw new AuthenticationError(
         'The access token has been expired! Please login again!'
@@ -41,8 +40,7 @@ const server = new ApolloServer({
   resolvers,
   context: async ({ req }) => {
     const token = req.headers['authorization']
-    console.log(token)
-    return { User, Post, token: await getUser(token) }
+    return { User, Post, currentUser: await getUser(token) }
   },
 })
 
