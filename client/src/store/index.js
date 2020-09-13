@@ -49,7 +49,6 @@ export default new Vuex.Store({
         .then(async ({ data }) => {
           localStorage.setItem('token', data.signinUser.token)
           await router.go()
-          await router.push('/')
           console.log(data.signinUser)
         })
         .catch((err) => {
