@@ -10,7 +10,7 @@
     </v-snackbar>
 
     <!-- auth error snackbar -->
-    <v-snackbar v-model="authErrorSnackbarShown" :timeout="timeout" color="error">
+    <v-snackbar v-model="authErrorSnackbarShown" :timeout="timeout" color="error" v-if="authError">
       <v-icon left>mdi-cancel</v-icon>
       <span>{{authError.message}}</span>
       <template v-slot:action="{ attrs }">

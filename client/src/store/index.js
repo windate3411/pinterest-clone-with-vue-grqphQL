@@ -1,7 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { defaultClient as apolloClient } from '../main.js'
-import { GET_POSTS, USER_SIGNIN, GET_CURRENT_USER } from '../queries.js'
+import {
+  GET_POSTS,
+  USER_SIGNIN,
+  GET_CURRENT_USER,
+  USER_SIGNUP,
+} from '../queries.js'
 import router from '../router'
 Vue.use(Vuex)
 
@@ -69,6 +74,33 @@ export default new Vuex.Store({
         })
         .catch((err) => {
           // commit('SET_LOADING', false)
+          commit('SET_ERROR', err)
+          console.log(err)
+        })
+    },
+    signupUser: ({ commit }, payload) => {
+      // reset error
+      commit('SET_ERROR', null)
+
+      // reset token
+      localStorage.setItem('token', '')
+
+      // set loading when signing up
+      commit('SET_LOADING', true)
+
+      apolloClient
+        .mutate({
+          mutation: USER_SIGNUP,
+          variables: payload,
+        })
+        .then(async ({ data }) => {
+          localStorage.setItem('token', data.signupUser.token)
+          commit('SET_LOADING', false)
+          await router.go()
+          console.log(data.signupUser)
+        })
+        .catch((err) => {
+          commit('SET_LOADING', false)
           commit('SET_ERROR', err)
           console.log(err)
         })
