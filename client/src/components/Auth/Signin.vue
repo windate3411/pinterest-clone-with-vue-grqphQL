@@ -6,9 +6,15 @@
       </v-col>
     </v-row>
 
+    <!-- form alert -->
+    <v-row v-if="error">
+      <v-col xs="12" sm="6" offset="sm-3">
+        <form-alert :message="error"></form-alert>
+      </v-col>
+    </v-row>
     <!-- signin form -->
     <v-row>
-      <v-col xs="12" md="6" offset="sm-3">
+      <v-col xs="12" sm="6" offset="sm-3">
         <v-card class="elevation-12">
           <v-toolbar color="primary" dark flat>
             <v-toolbar-title class="text-center">Sign in to Vinterest</v-toolbar-title>
@@ -71,7 +77,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["currentUser"]),
+    ...mapGetters(["currentUser", "error"]),
   },
   watch: {
     currentUser: {
