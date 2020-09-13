@@ -31,9 +31,15 @@ type Token {
   token: String!
 }
 
+type PostsPage {
+  posts: [Post]
+  hasMorePosts: Boolean
+}
+
 type Query {
   getPosts: [Post]
   getCurrentUser: User
+  infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage
 }
 
 type Mutation {
