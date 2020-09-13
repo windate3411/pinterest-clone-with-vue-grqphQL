@@ -39,6 +39,8 @@ export default new Vuex.Store({
         })
     },
     signinUser: ({ commit }, payload) => {
+      // reset token
+      localStorage.setItem('token', '')
       apolloClient
         .mutate({
           mutation: USER_SIGNIN,
