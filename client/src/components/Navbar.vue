@@ -1,5 +1,14 @@
 <template>
   <div>
+    <!-- snackbar -->
+    <v-snackbar v-model="authSnackbarShown" :timeout="timeout" color="success">
+      <v-icon left>mdi-check</v-icon>
+      <span>You've successfully signed in!</span>
+      <template v-slot:action="{ attrs }">
+        <v-btn dark text v-bind="attrs" @click="authSnackbarShown = false">X</v-btn>
+      </template>
+    </v-snackbar>
+
     <!-- sidebar -->
     <v-navigation-drawer app temporary fixed v-model="sidebarShown">
       <v-app-bar color="accent" dense text>
@@ -84,6 +93,8 @@ export default {
     return {
       sidebarShown: false,
       sideBarSeletedItem: 0,
+      authSnackbarShown: false,
+      timeout: 3000,
     };
   },
   methods: {
@@ -137,6 +148,11 @@ export default {
         ];
       }
       return items;
+    },
+  },
+  watch: {
+    currentUser(val, oldVal) {
+      if (!oldVal) this.authSnackbarShown = true;
     },
   },
 };

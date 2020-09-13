@@ -12,27 +12,27 @@
 </template>
 
 <script>
-import Navbar from './components/Navbar.vue'
+import Navbar from "./components/Navbar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Navbar,
   },
-}
+};
 </script>
 
 <style lang="stylus" scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: all 0.25s;
+}
 
-.fade-enter-active
-.fade-leave-active
-  transition all 0.25s
+.fade-enter-active {
+  transition-delay: 0.25s;
+}
 
-.fade-enter-active
-  transition-delay 0.25s
-
-.fade-enter
-.fade-leave-active
-  opacity 0
-  transform translateX(-25px)
+.fade-enter, .fade-leave-active {
+  opacity: 0;
+  transform: translateX(-25px);
+}
 </style>

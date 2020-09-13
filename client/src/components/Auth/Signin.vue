@@ -82,7 +82,7 @@ export default {
       usernameRules: [
         (value) => !!value || "Username is required",
         (value) =>
-          value.length < 10 || "Username must be less than 10 characters",
+          value.length < 12 || "Username must be less than 12 characters",
       ],
       passwordRules: [(value) => !!value || "Password is required"],
       isFormValid: true,
