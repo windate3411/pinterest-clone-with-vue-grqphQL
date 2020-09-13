@@ -1,10 +1,39 @@
 <template>
-  <v-container v-if="infiniteScrollPosts" class="text-center">
-    <div v-for="post in infiniteScrollPosts.posts" :key="post._id">
-      <img :src="post.imgUrl" height="100px" />
-      <h3>{{post.title}}</h3>
-    </div>
-    <v-btn @click="showMorePosts" v-if="showMoreEnabled">Fetch more</v-btn>
+  <v-container fluid class="text-center">
+    <!-- Posts Cards -->
+    <v-row v-if="infiniteScrollPosts">
+      <v-col xs="12" sm="6" v-for="post in infiniteScrollPosts.posts" :key="post._id">
+        <v-card hover class="mx-auto" fill-height>
+          <v-img :src="post.imgUrl" height="30vh" lazy-src></v-img>
+          <v-card-title>{{post.title}}</v-card-title>
+          <v-card-actions>
+            <v-list-item class="grow">
+              <v-list-item-avatar color="grey darken-3">
+                <v-img class="elevation-6" :src="post.createdBy.avatar"></v-img>
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+                <v-list-item-title>{{post.createdBy.username}}</v-list-item-title>
+              </v-list-item-content>
+
+              <v-row align="center" justify="end">
+                <v-icon class="mr-1">mdi-heart</v-icon>
+                <span class="subheading mr-2">{{post.likes}}</span>
+                <span class="mr-1">·</span>
+                <v-icon class="mr-1">mdi-chat</v-icon>
+                <span class="subheading">{{post.messages.length}}</span>
+                <v-icon right>mdi-chevron-down</v-icon>
+              </v-row>
+            </v-list-item>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row v-if="showMoreEnabled">
+      <v-col justify="center" xs="12">
+        <v-btn @click="showMorePosts" color="info" dense>Fetch more</v-btn>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

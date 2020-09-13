@@ -11,7 +11,7 @@
       <v-col xs="12" sm="6" offset="sm-3">
         <v-card class="elevation-12">
           <v-toolbar color="primary" dark flat>
-            <v-toolbar-title class="text-center">Sign up to Vinterest</v-toolbar-title>
+            <v-toolbar-title class="text-center">It's time to post something!</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form v-model="isFormValid" lazy-validation ref="form">
