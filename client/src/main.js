@@ -36,6 +36,10 @@ export const defaultClient = new ApolloClient({
     if (networkError) console.log('[Network error]', networkError)
     if (graphQLErrors) {
       for (let error of graphQLErrors) {
+        if (error.name === 'AuthenticationError') {
+          store.commit('SET_AUTH_ERROR', error)
+          store.dispatch('signoutUser')
+        }
         console.log('[graphqlErrors error]', error)
       }
     }

@@ -1,11 +1,20 @@
 <template>
   <div>
-    <!-- snackbar -->
+    <!-- auth snackbar -->
     <v-snackbar v-model="authSnackbarShown" :timeout="timeout" color="success">
       <v-icon left>mdi-check</v-icon>
       <span>You've successfully signed in!</span>
       <template v-slot:action="{ attrs }">
         <v-btn dark text v-bind="attrs" @click="authSnackbarShown = false">X</v-btn>
+      </template>
+    </v-snackbar>
+
+    <!-- auth error snackbar -->
+    <v-snackbar v-model="authErrorSnackbarShown" :timeout="timeout" color="error">
+      <v-icon left>mdi-cancel</v-icon>
+      <span>{{authError.message}}</span>
+      <template v-slot:action="{ attrs }">
+        <v-btn dark text v-bind="attrs" @click="authErrorSnackbarShown = false">X</v-btn>
       </template>
     </v-snackbar>
 
@@ -94,14 +103,15 @@ export default {
       sidebarShown: false,
       sideBarSeletedItem: 0,
       authSnackbarShown: false,
-      timeout: 3000,
+      authErrorSnackbarShown: false,
+      timeout: 5000,
     };
   },
   methods: {
     ...mapActions(["signoutUser"]),
   },
   computed: {
-    ...mapGetters(["currentUser"]),
+    ...mapGetters(["currentUser", "authError"]),
     navItems() {
       let items = [
         { icon: "mdi-chat-plus-outline", title: "Posts", link: "/posts" },
@@ -153,6 +163,9 @@ export default {
   watch: {
     currentUser(val, oldVal) {
       if (!oldVal) this.authSnackbarShown = true;
+    },
+    authError(val, oldVal) {
+      if (!oldVal) this.authErrorSnackbarShown = true;
     },
   },
 };
