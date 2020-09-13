@@ -40,8 +40,12 @@
           </v-list-item>
           <v-divider></v-divider>
           <v-list-item class="mt-2" v-if="currentUser" @click="signoutUser">
-            <v-icon left>mdi-exit-to-app</v-icon>
-            <span>Sign Out</span>
+            <v-list-item-icon>
+              <v-icon v-text="'mdi-exit-to-app'"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="'Sign Out'"></v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
       </v-list>
