@@ -11,7 +11,32 @@ export const GET_POSTS = gql`
     }
   }
 `
+// post mutations
 
+export const ADD_POST = gql`
+  mutation(
+    $title: String!
+    $description: String!
+    $imgUrl: String!
+    $categories: [String]!
+    $creatorId: ID!
+  ) {
+    addPost(
+      title: $title
+      description: $description
+      imgUrl: $imgUrl
+      categories: $categories
+      creatorId: $creatorId
+    ) {
+      title
+      description
+      imgUrl
+      categories
+      createdDate
+      likes
+    }
+  }
+`
 // user queries
 
 export const GET_CURRENT_USER = gql`

@@ -41,7 +41,7 @@ type Mutation {
     title: String!
     imgUrl: String!
     description: String!
-    categories: [String!]
+    categories: [String]!
     creatorId: ID!
   ): Post!
   signupUser(username: String!, email: String!, password: String!): Token

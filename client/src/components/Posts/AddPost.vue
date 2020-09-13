@@ -131,8 +131,15 @@ export default {
   methods: {
     handleAddPostSubmit() {
       if (this.$refs.form.validate()) {
-        console.log("OK");
+        this.$store.dispatch("addPost", {
+          title: this.title,
+          description: this.description,
+          imgUrl: this.imgUrl,
+          categories: this.categories,
+          creatorId: this.currentUser._id,
+        });
       }
+      this.$router.push("/");
     },
   },
   computed: {
