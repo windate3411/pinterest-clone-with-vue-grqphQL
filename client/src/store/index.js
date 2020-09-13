@@ -45,8 +45,13 @@ export default new Vuex.Store({
     signinUser: ({ commit }, payload) => {
       // reset error
       commit('SET_ERROR', null)
+
       // reset token
       localStorage.setItem('token', '')
+
+      // set loading when logingin
+      // commit('SET_LOADING', true)
+
       apolloClient
         .mutate({
           mutation: USER_SIGNIN,
@@ -54,10 +59,12 @@ export default new Vuex.Store({
         })
         .then(async ({ data }) => {
           localStorage.setItem('token', data.signinUser.token)
+          // commit('SET_LOADING', false)
           await router.go()
           console.log(data.signinUser)
         })
         .catch((err) => {
+          // commit('SET_LOADING', false)
           commit('SET_ERROR', err)
           console.log(err)
         })
@@ -83,6 +90,7 @@ export default new Vuex.Store({
       localStorage.setItem('token', '')
       // end apollo session
       await apolloClient.resetStore()
+
       router.push('/signin')
     },
   },

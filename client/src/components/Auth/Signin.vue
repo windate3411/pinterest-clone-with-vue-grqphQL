@@ -42,7 +42,19 @@
           <v-card-actions>
             <v-row>
               <v-col xs="12">
-                <v-btn color="accent" @click="handleSigninSubmit">Sign in</v-btn>
+                <v-btn
+                  color="accent"
+                  @click="handleSigninSubmit"
+                  :loading="loading"
+                  :disabled="loading"
+                >
+                  <template v-slot:loader>
+                    <span class="custom-loader">
+                      <v-icon light>mdi-cached</v-icon>
+                    </span>
+                  </template>
+                  Sign in
+                </v-btn>
                 <h4 class="grey--text mt-3">
                   Doesn't have an account?
                   <router-link class="ml-2" to="/signup">Sign up</router-link>
@@ -77,7 +89,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["currentUser", "error"]),
+    ...mapGetters(["currentUser", "error", "loading"]),
   },
   watch: {
     currentUser: {
@@ -89,3 +101,42 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.custom-loader {
+  animation: loader 1s infinite;
+  display: flex;
+}
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
