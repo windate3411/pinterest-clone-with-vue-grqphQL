@@ -20,10 +20,11 @@
             <v-toolbar-title class="text-center">Sign in to Vinterest</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-form>
+            <v-form v-model="isFormValid" lazy-validation ref="form">
               <v-text-field
                 label="Username"
                 name="username"
+                :rules="usernameRules"
                 prepend-icon="mdi-account"
                 type="text"
                 v-model="username"
@@ -35,6 +36,7 @@
                 name="password"
                 prepend-icon="mdi-lock"
                 type="password"
+                :rules="passwordRules"
                 v-model="password"
               ></v-text-field>
             </v-form>
@@ -46,7 +48,7 @@
                   color="accent"
                   @click="handleSigninSubmit"
                   :loading="loading"
-                  :disabled="loading"
+                  :disabled="loading || !isFormValid"
                 >
                   <template v-slot:loader>
                     <span class="custom-loader">
@@ -77,15 +79,24 @@ export default {
     return {
       username: "",
       password: "",
+      usernameRules: [
+        (value) => !!value || "Username is required",
+        (value) =>
+          value.length < 10 || "Username must be less than 10 characters",
+      ],
+      passwordRules: [(value) => !!value || "Password is required"],
+      isFormValid: true,
     };
   },
   methods: {
     ...mapActions(["signinUser"]),
     handleSigninSubmit() {
-      this.signinUser({
-        username: this.username,
-        password: this.password,
-      });
+      if (this.$refs.form.validate()) {
+        this.signinUser({
+          username: this.username,
+          password: this.password,
+        });
+      }
     },
   },
   computed: {
