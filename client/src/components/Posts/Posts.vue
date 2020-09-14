@@ -3,7 +3,7 @@
     <!-- Posts Cards -->
     <v-row v-if="infiniteScrollPosts">
       <v-col xs="12" sm="6" v-for="post in infiniteScrollPosts.posts" :key="post._id">
-        <v-card hover class="mx-auto" fill-height>
+        <v-card hover class="mx-auto" fill-height @click.native="goToPost(post._id)">
           <v-img :src="post.imgUrl" height="30vh" lazy-src></v-img>
           <v-card-title>{{post.title}}</v-card-title>
           <v-card-actions>
@@ -82,6 +82,9 @@ export default {
           };
         },
       });
+    },
+    goToPost(postId) {
+      this.$router.push(`/posts/${postId}`);
     },
   },
 };

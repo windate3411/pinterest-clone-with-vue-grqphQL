@@ -6,7 +6,7 @@
     <v-row v-else>
       <v-col xs="12">
         <v-carousel circle>
-          <v-carousel-item v-for="post in posts" :key="post._id" :src="post.imgUrl">
+          <v-carousel-item v-for="post in posts" :key="post._id" :src="post.imgUrl" @click.native="goToPost(post._id)">
             <h1 class="text-center carousel-title">{{ post.title }}</h1>
           </v-carousel-item>
         </v-carousel>
@@ -23,6 +23,9 @@ export default {
   name: "Home",
   methods: {
     ...mapActions(["getPosts"]),
+    goToPost(postId) {
+      this.$router.push(`/posts/${postId}`);
+    },
   },
   computed: {
     ...mapGetters(["posts", "loading"]),
