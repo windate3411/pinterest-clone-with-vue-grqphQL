@@ -45,6 +45,52 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- message section -->
+    <div class="message-container mt-5">
+      <!-- message textarea -->
+      <v-row v-if="currentUser">
+        <v-col xs="12">
+          <v-form>
+            <v-row>
+              <v-col xs="12">
+                <v-text-field
+                  clearable
+                  append-outer-icon="mdi-send"
+                  prepend-icon="mdi-email"
+                  label="Add your thought to this Post"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-col>
+      </v-row>
+
+      <!-- display post messages  -->
+      <v-row>
+        <v-col xs="12">
+          <v-list subheader two-line>
+            <v-subheader inset>Messages ({{getPost.messages.length}})</v-subheader>
+            <template v-for="message in getPost.messages">
+              <v-divider :key="message.id"></v-divider>
+              <v-list-item avatar inset :key="message.title">
+                <v-list-item-avatar>
+                  <v-img :src="message.messageUser.avatar"></v-img>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>{{message.messageBody}}</v-list-item-title>
+                  <v-list-item-subtitle>{{message.messageUser.username}}</v-list-item-subtitle>
+                  <span class="grey--text text--lighten-1 hidden-xs-only">{{message.messageDate}}</span>
+                </v-list-item-content>
+                <v-list-item-action>
+                  <v-icon color="grey">mdi-chat-processing-outline</v-icon>
+                </v-list-item-action>
+              </v-list-item>
+            </template>
+          </v-list>
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
 
