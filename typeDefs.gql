@@ -39,6 +39,7 @@ type PostsPage {
 type Query {
   getPosts: [Post]
   getCurrentUser: User
+  getPost(post_id: ID!): Post!
   infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage
 }
 

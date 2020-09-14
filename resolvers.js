@@ -18,6 +18,13 @@ module.exports = {
       })
       return posts
     },
+    getPost: async (_, { post_id }, { Post }) => {
+      const post = await Post.findOne({ _id: post_id }).populate({
+        path: 'messages.messageUser',
+        model: 'User',
+      })
+      return post
+    },
     getCurrentUser: async (_, args, { User, currentUser }) => {
       if (!currentUser) return null
       const user = await User.findOne({
