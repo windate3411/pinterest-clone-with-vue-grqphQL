@@ -51,6 +51,7 @@ type Mutation {
     categories: [String]!
     creatorId: ID!
   ): Post!
+  addPostMessage(messageBody: String!, post_id: ID!, user_id: ID!): Message!
   signupUser(username: String!, email: String!, password: String!): Token
   signinUser(username: String!, password: String!): Token
 }

@@ -1,6 +1,7 @@
 const User = require('./models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { findOneAndUpdate } = require('./models/User')
 
 const createToken = (user, secret, expiresIn) => {
   const { username, email } = user
@@ -93,6 +94,28 @@ module.exports = {
         createdBy: creatorId,
       }).save()
       return newPost
+    },
+    addPostMessage: async (_, { messageBody, user_id, post_id }, { Post }) => {
+      const newMessage = {
+        messageBody,
+        messageUser: user_id,
+      }
+      const post = await findOneAndUpdate(
+        // find the certain post
+        { _id: post_id },
+        // add the new newMessage to the existing array to specific positon
+        {
+          $push: {
+            messages: { $each: [newMessage], $position: 0 },
+          },
+        },
+        // return the updated document
+        { new: true }
+      ).populate({
+        path: messages.messageUser,
+        model: 'User',
+      })
+      return post.messages[0]
     },
   },
 }
