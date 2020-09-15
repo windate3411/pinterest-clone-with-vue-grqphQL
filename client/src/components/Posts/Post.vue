@@ -51,14 +51,16 @@
       <!-- message textarea -->
       <v-row v-if="currentUser">
         <v-col xs="12">
-          <v-form>
+          <v-form @submit.prevent="handleAddPosrMessage">
             <v-row>
               <v-col xs="12">
                 <v-text-field
                   clearable
-                  append-outer-icon="mdi-send"
+                  :append-outer-icon="messageBody && 'mdi-send'"
                   prepend-icon="mdi-email"
                   label="Add your thought to this Post"
+                  @click:append-outer="handleAddPosrMessage"
+                  v-model="messageBody"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -73,7 +75,7 @@
             <v-subheader inset>Messages ({{getPost.messages.length}})</v-subheader>
             <template v-for="message in getPost.messages">
               <v-divider :key="message.id"></v-divider>
-              <v-list-item avatar inset :key="message.title">
+              <v-list-item inset :key="message.title">
                 <v-list-item-avatar>
                   <v-img :src="message.messageUser.avatar"></v-img>
                 </v-list-item-avatar>
@@ -95,7 +97,7 @@
 </template>
 
 <script>
-import { GET_POST } from "../../queries";
+import { GET_POST, ADD_POST_MESSAGE } from "../../queries";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -104,6 +106,7 @@ export default {
   data() {
     return {
       dialog: false,
+      messageBody: "",
     };
   },
   apollo: {
@@ -122,6 +125,45 @@ export default {
     },
     toggleImgaeDialog() {
       if (window.innerWidth > 500) this.dialog = !this.dialog;
+    },
+    handleAddPosrMessage() {
+      const { post_id, messageBody, currentUser } = this;
+      const variables = {
+        post_id,
+        messageBody,
+        user_id: currentUser._id,
+      };
+      this.$apollo
+        .mutate({
+          mutation: ADD_POST_MESSAGE,
+          variables,
+          update: (cache, { data: { addPostMessage } }) => {
+            // read the query we want to update
+            const data = cache.readQuery({
+              query: GET_POST,
+              variables: {
+                post_id,
+              },
+            });
+
+            // add the new message to the existing array
+            data.getPost.messages.unshift(addPostMessage);
+            cache.writeQuery({
+              query: GET_POST,
+              variables: {
+                post_id,
+              },
+              data,
+            });
+          },
+        })
+        .then(({ data }) => {
+          console.log(data.addPostMessage);
+          this.messageBody = "";
+        })
+        .then((err) => {
+          console.log(err);
+        });
     },
   },
   computed: {

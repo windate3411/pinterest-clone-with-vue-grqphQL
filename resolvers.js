@@ -100,7 +100,7 @@ module.exports = {
         messageBody,
         messageUser: user_id,
       }
-      const post = await findOneAndUpdate(
+      const post = await Post.findOneAndUpdate(
         // find the certain post
         { _id: post_id },
         // add the new newMessage to the existing array to specific positon
@@ -112,7 +112,7 @@ module.exports = {
         // return the updated document
         { new: true }
       ).populate({
-        path: messages.messageUser,
+        path: 'messages.messageUser',
         model: 'User',
       })
       return post.messages[0]
