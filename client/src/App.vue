@@ -1,6 +1,6 @@
 <template>
   <v-app style="background-color:#E3E3EE">
-    <Navbar />
+    <Navbar class="demo" />
     <v-main>
       <v-container class="mt-4">
         <transition name="fade">
@@ -23,6 +23,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.demo
+  z-index 205
 .fade-enter-active, .fade-leave-active {
   transition: all 0.25s;
 }

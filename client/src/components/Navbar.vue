@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-5">
     <!-- auth snackbar -->
     <v-snackbar v-model="authSnackbarShown" :timeout="timeout" color="success">
       <v-icon left>mdi-check</v-icon>
@@ -72,6 +72,25 @@
         color="accent"
       ></v-text-field>
 
+      <!-- search results cards -->
+      <v-card v-if="searchResults.length" light id="search_card">
+        <v-list dense>
+          <v-list-item
+            v-for="post in searchResults"
+            :key="post._id"
+            link
+            @click="goToSearchedPost(post._id)"
+          >
+            <v-list-item-title>
+              {{post.title}}
+              <span
+                class="font-weight-thin ml-2"
+              >{{formattedDescription(post.description)}}</span>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-card>
+
       <v-spacer></v-spacer>
 
       <v-btn text v-if="currentUser" to="/profile">
@@ -129,9 +148,22 @@ export default {
         searchTerm: this.searchTerm,
       });
     },
+    goToSearchedPost(post_id) {
+      this.searchTerm = "";
+      this.$router.push(`/posts/${post_id}`);
+      this.$store.commit("CLEAR_SEARCH_RESULTS");
+    },
+    formattedDescription(desc) {
+      return desc.length > 30 ? `${desc.slice(0, 30)}...` : desc;
+    },
   },
   computed: {
-    ...mapGetters(["currentUser", "authError", "userFavorites"]),
+    ...mapGetters([
+      "currentUser",
+      "authError",
+      "userFavorites",
+      "searchResults",
+    ]),
     navItems() {
       let items = [
         { icon: "mdi-chat-plus-outline", title: "Posts", link: "/posts" },
@@ -194,8 +226,15 @@ export default {
 
 <style lang="stylus" scoped>
 
-// bounce animation
+#search_card
+  position absolute
+  width 100vw
+  top 100%
+  left 0
+  color #fff
+  background-color red
 
+// bounce animation
 .bounce
   animation bounce 1s both
 

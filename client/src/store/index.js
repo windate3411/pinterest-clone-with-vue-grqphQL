@@ -19,6 +19,7 @@ export default new Vuex.Store({
     currentUser: null,
     error: null,
     authError: null,
+    searchResults: [],
   },
   mutations: {
     SET_POSTS: (state, payload) => {
@@ -35,6 +36,12 @@ export default new Vuex.Store({
     },
     SET_AUTH_ERROR: (state, payload) => {
       state.authError = payload
+    },
+    SET_SEARCH_RESULTS: (state, payload) => {
+      state.searchResults = payload
+    },
+    CLEAR_SEARCH_RESULTS: (state) => {
+      state.searchResults = []
     },
   },
   actions: {
@@ -62,7 +69,7 @@ export default new Vuex.Store({
         })
         .then(({ data }) => {
           console.log('search results', data.searchPosts)
-          // commit('SET_POSTS', data.searchPosts)
+          commit('SET_SEARCH_RESULTS', data.searchPosts)
           commit('SET_LOADING', false)
         })
         .catch((err) => {
@@ -195,5 +202,6 @@ export default new Vuex.Store({
     error: (state) => state.error,
     authError: (state) => state.authError,
     userFavorites: (state) => state.currentUser && state.currentUser.favorites,
+    searchResults: (state) => state.searchResults,
   },
 })
