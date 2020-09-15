@@ -17,7 +17,8 @@ Vue.use(VueApollo)
 
 // setup AplloClient
 export const defaultClient = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  // uri: 'http://localhost:4000/graphql',
+  uri: 'https://vinterest-danny.herokuapp.com/graphql',
   // includes token saved in localstorage with requests
   fetchOptions: {
     credentials: 'include',
