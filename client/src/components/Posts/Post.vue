@@ -51,7 +51,12 @@
       <!-- message textarea -->
       <v-row v-if="currentUser">
         <v-col xs="12">
-          <v-form @submit.prevent="handleAddPosrMessage">
+          <v-form
+            @submit.prevent="handleAddPosrMessage"
+            ref="form"
+            lazy-validation
+            v-model="isFormValidated"
+          >
             <v-row>
               <v-col xs="12">
                 <v-text-field
@@ -61,6 +66,9 @@
                   label="Add your thought to this Post"
                   @click:append-outer="handleAddPosrMessage"
                   v-model="messageBody"
+                  :rules="addPostMessageRules"
+                  maxlength="60"
+                  counter
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -85,7 +93,9 @@
                   <span class="grey--text text--lighten-1 hidden-xs-only">{{message.messageDate}}</span>
                 </v-list-item-content>
                 <v-list-item-action>
-                  <v-icon color="grey">mdi-chat-processing-outline</v-icon>
+                  <v-icon
+                    :color="checkIfOwnMessage(message) ? 'accent': 'grey'"
+                  >mdi-chat-processing-outline</v-icon>
                 </v-list-item-action>
               </v-list-item>
             </template>
@@ -107,6 +117,11 @@ export default {
     return {
       dialog: false,
       messageBody: "",
+      isFormValidated: true,
+      addPostMessageRules: [
+        (value) =>
+          value.length < 60 || "Message must be less than 60 characters",
+      ],
     };
   },
   apollo: {
@@ -126,7 +141,11 @@ export default {
     toggleImgaeDialog() {
       if (window.innerWidth > 500) this.dialog = !this.dialog;
     },
+    checkIfOwnMessage(message) {
+      return message.messageUser._id === this.currentUser._id;
+    },
     handleAddPosrMessage() {
+      if (!this.$refs.form.validate()) return;
       const { post_id, messageBody, currentUser } = this;
       const variables = {
         post_id,
@@ -159,7 +178,7 @@ export default {
         })
         .then(({ data }) => {
           console.log(data.addPostMessage);
-          this.messageBody = "";
+          this.$refs.form.reset();
         })
         .then((err) => {
           console.log(err);
