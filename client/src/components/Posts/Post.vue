@@ -6,7 +6,7 @@
           <!-- card title -->
           <v-card-title>
             <h1>{{getPost.title}}</h1>
-            <v-btn v-if="currentUser" large text>
+            <v-btn v-if="currentUser" @click="handleUnLikePost" large text>
               <v-icon large color="red">mdi-heart</v-icon>
             </v-btn>
             <h3 class="ml-3 font-weight-thin">{{getPost.likes}} Likes</h3>
@@ -107,7 +107,12 @@
 </template>
 
 <script>
-import { GET_POST, ADD_POST_MESSAGE } from "../../queries";
+import {
+  GET_POST,
+  ADD_POST_MESSAGE,
+  LIKE_POST,
+  UNLIKE_POST,
+} from "../../queries";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -143,6 +148,78 @@ export default {
     },
     checkIfOwnMessage(message) {
       return message.messageUser._id === this.currentUser._id;
+    },
+    handleLikePost() {
+      const { post_id, messageBody, currentUser } = this;
+      const variables = {
+        post_id,
+        username: currentUser.username,
+      };
+      this.$apollo
+        .mutate({
+          mutation: LIKE_POST,
+          variables,
+          update: (cache, { data: { likePost } }) => {
+            const data = cache.readQuery({
+              query: GET_POST,
+              variables: {
+                post_id: this.post_id,
+              },
+            });
+            data.getPost.likes += 1;
+            cache.writeQuery({
+              query: GET_POST,
+              variables: {
+                post_id: this.post_id,
+              },
+              data,
+            });
+          },
+        })
+        .then(({ data }) => {
+          const updatedUser = {
+            ...currentUser,
+            favorites: data.likePost.favorites,
+          };
+          this.$store.commit("SET_CURRENT_USER", updatedUser);
+        })
+        .catch((err) => console.log(err));
+    },
+    handleUnLikePost() {
+      const { post_id, messageBody, currentUser } = this;
+      const variables = {
+        post_id,
+        username: currentUser.username,
+      };
+      this.$apollo
+        .mutate({
+          mutation: UNLIKE_POST,
+          variables,
+          update: (cache, { data: { unLikePost } }) => {
+            const data = cache.readQuery({
+              query: GET_POST,
+              variables: {
+                post_id: this.post_id,
+              },
+            });
+            data.getPost.likes -= 1;
+            cache.writeQuery({
+              query: GET_POST,
+              variables: {
+                post_id: this.post_id,
+              },
+              data,
+            });
+          },
+        })
+        .then(({ data }) => {
+          const updatedUser = {
+            ...currentUser,
+            favorites: data.UnLikePost.favorites,
+          };
+          this.$store.commit("SET_CURRENT_USER", updatedUser);
+        })
+        .catch((err) => console.log(err));
     },
     handleAddPosrMessage() {
       if (!this.$refs.form.validate()) return;

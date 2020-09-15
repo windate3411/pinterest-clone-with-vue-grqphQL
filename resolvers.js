@@ -118,12 +118,12 @@ module.exports = {
       return post.messages[0]
     },
     likePost: async (_, { post_id, username }, { Post, User }) => {
-      const post = Post.findOneAndUpdate(
+      const post = await Post.findOneAndUpdate(
         { _id: post_id },
         { $inc: { likes: 1 } },
         { new: true }
       )
-      const user = User.findOneAndUpdate(
+      const user = await User.findOneAndUpdate(
         { username },
         { $addToSet: { favorites: post_id } },
         { new: true }
@@ -137,12 +137,12 @@ module.exports = {
       }
     },
     unLikePost: async (_, { post_id, username }, { Post, User }) => {
-      const post = Post.findOneAndUpdate(
+      const post = await Post.findOneAndUpdate(
         { _id: post_id },
         { $inc: { likes: -1 } },
         { new: true }
       )
-      const user = User.findOneAndUpdate(
+      const user = await User.findOneAndUpdate(
         { username },
         { $pull: { favorites: post_id } },
         { new: true }
