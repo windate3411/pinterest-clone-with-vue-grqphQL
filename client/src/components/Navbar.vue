@@ -74,7 +74,7 @@
 
       <v-btn text v-if="currentUser" to="/profile">
         <v-icon class="hidden-sm-only" left>mdi-account-box-outline</v-icon>
-        <v-badge right color="blue darken-2">
+        <v-badge right color="blue darken-2" :class="{'bounce':badgeAnimated}">
           <span slot="badge" v-if="userFavorites.length">{{userFavorites.length}}</span>
           Profile
         </v-badge>
@@ -116,6 +116,7 @@ export default {
       authSnackbarShown: false,
       authErrorSnackbarShown: false,
       timeout: 5000,
+      badgeAnimated: false,
     };
   },
   methods: {
@@ -173,6 +174,34 @@ export default {
     authError(val, oldVal) {
       if (!oldVal) this.authErrorSnackbarShown = true;
     },
+    userFavorites(val) {
+      if (val) {
+        this.badgeAnimated = true;
+        setTimeout(() => (this.badgeAnimated = false), 1500);
+      }
+    },
   },
 };
 </script>
+
+<style lang="stylus" scoped>
+
+// bounce animation
+
+.bounce
+  animation bounce 1s both
+
+@keyframes bounce
+  0%, 20%, 53%, 80%, 100% {
+    transform translate3d(0,0,0)
+  }
+  40%, 43% {
+    transform translate3d(0,-20px,0)
+  }
+  70% {
+    transform translate3d(0,-10px,0)
+  }
+  90% {
+    transform translate3d(0,-4px,0)
+  }
+</style>
