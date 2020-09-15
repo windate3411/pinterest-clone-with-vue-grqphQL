@@ -117,5 +117,43 @@ module.exports = {
       })
       return post.messages[0]
     },
+    likePost: async (_, { post_id, username }, { Post, User }) => {
+      const post = Post.findOneAndUpdate(
+        { _id: post_id },
+        { $inc: { likes: 1 } },
+        { new: true }
+      )
+      const user = User.findOneAndUpdate(
+        { username },
+        { $addToSet: { favorites: post_id } },
+        { new: true }
+      ).populate({
+        path: 'favorites',
+        model: 'Post',
+      })
+      return {
+        likes: post.likes,
+        favorites: user.favorites,
+      }
+    },
+    unLikePost: async (_, { post_id, username }, { Post, User }) => {
+      const post = Post.findOneAndUpdate(
+        { _id: post_id },
+        { $inc: { likes: -1 } },
+        { new: true }
+      )
+      const user = User.findOneAndUpdate(
+        { username },
+        { $pull: { favorites: post_id } },
+        { new: true }
+      ).populate({
+        path: 'favorites',
+        model: 'Post',
+      })
+      return {
+        likes: post.likes,
+        favorites: user.favorites,
+      }
+    },
   },
 }
