@@ -6,8 +6,8 @@
           <!-- card title -->
           <v-card-title>
             <h1>{{getPost.title}}</h1>
-            <v-btn v-if="currentUser" @click="handleUnLikePost" large text>
-              <v-icon large color="red">mdi-heart</v-icon>
+            <v-btn v-if="currentUser" @click="handleLikeToggle" large text>
+              <v-icon large :color="checkIfLikedPost(post_id)?'red':'grey'">mdi-heart</v-icon>
             </v-btn>
             <h3 class="ml-3 font-weight-thin">{{getPost.likes}} Likes</h3>
             <v-spacer></v-spacer>
@@ -122,6 +122,7 @@ export default {
     return {
       dialog: false,
       messageBody: "",
+      hasLiked: false,
       isFormValidated: true,
       addPostMessageRules: [
         (value) =>
@@ -148,6 +149,18 @@ export default {
     },
     checkIfOwnMessage(message) {
       return message.messageUser._id === this.currentUser._id;
+    },
+    checkIfLikedPost(post_id) {
+      if (
+        this.userFavorites &&
+        this.userFavorites.some((post) => post._id === post_id)
+      ) {
+        return (this.hasLiked = true);
+      }
+      return (this.hasLiked = false);
+    },
+    handleLikeToggle() {
+      return this.hasLiked ? this.handleUnLikePost() : this.handleLikePost();
     },
     handleLikePost() {
       const { post_id, messageBody, currentUser } = this;
@@ -215,7 +228,7 @@ export default {
         .then(({ data }) => {
           const updatedUser = {
             ...currentUser,
-            favorites: data.UnLikePost.favorites,
+            favorites: data.unLikePost.favorites,
           };
           this.$store.commit("SET_CURRENT_USER", updatedUser);
         })
@@ -263,7 +276,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["currentUser"]),
+    ...mapGetters(["currentUser", "userFavorites"]),
   },
 };
 </script>
