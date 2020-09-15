@@ -5,16 +5,25 @@
       <v-icon left>mdi-check</v-icon>
       <span>You've successfully signed in!</span>
       <template v-slot:action="{ attrs }">
-        <v-btn dark text v-bind="attrs" @click="authSnackbarShown = false">X</v-btn>
+        <v-btn dark text v-bind="attrs" @click="authSnackbarShown = false"
+          >X</v-btn
+        >
       </template>
     </v-snackbar>
 
     <!-- auth error snackbar -->
-    <v-snackbar v-model="authErrorSnackbarShown" :timeout="timeout" color="error" v-if="authError">
+    <v-snackbar
+      v-model="authErrorSnackbarShown"
+      :timeout="timeout"
+      color="error"
+      v-if="authError"
+    >
       <v-icon left>mdi-cancel</v-icon>
-      <span>{{authError.message}}</span>
+      <span>{{ authError.message }}</span>
       <template v-slot:action="{ attrs }">
-        <v-btn dark text v-bind="attrs" @click="authErrorSnackbarShown = false">X</v-btn>
+        <v-btn dark text v-bind="attrs" @click="authErrorSnackbarShown = false"
+          >X</v-btn
+        >
       </template>
     </v-snackbar>
 
@@ -30,7 +39,11 @@
       <!-- side-bar-links -->
       <v-list rounded class="mt-5">
         <v-list-item-group v-model="sideBarSeletedItem" color="primary">
-          <v-list-item v-for="(item, i) in sidebarItems" :key="i" :to="item.link">
+          <v-list-item
+            v-for="(item, i) in sidebarItems"
+            :key="i"
+            :to="item.link"
+          >
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
@@ -53,10 +66,14 @@
 
     <!-- nav -->
     <v-app-bar color="primary" dense dark>
-      <v-app-bar-nav-icon @click="sidebarShown = !sidebarShown"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        @click="sidebarShown = !sidebarShown"
+      ></v-app-bar-nav-icon>
 
       <v-toolbar-title>
-        <router-link to="/" tag="span" style="cursor:pointer">Vinterest</router-link>
+        <router-link to="/" tag="span" style="cursor:pointer"
+          >Vinterest</router-link
+        >
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
@@ -65,7 +82,7 @@
       <v-text-field
         hide-details
         prepend-icon="mdi-magnify"
-        placeholder="Search posts"
+        placeholder="Search posts in Vinterest"
         single-line
         v-model="searchTerm"
         @input="handleSearchPosts"
@@ -82,10 +99,10 @@
             @click="goToSearchedPost(post._id)"
           >
             <v-list-item-title>
-              {{post.title}}
-              <span
-                class="font-weight-thin ml-2"
-              >{{formattedDescription(post.description)}}</span>
+              {{ post.title }}
+              <span class="font-weight-thin ml-2">{{
+                formattedDescription(post.description)
+              }}</span>
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -95,8 +112,10 @@
 
       <v-btn text v-if="currentUser" to="/profile">
         <v-icon class="hidden-sm-only" left>mdi-account-box-outline</v-icon>
-        <v-badge right color="blue darken-2" :class="{'bounce':badgeAnimated}">
-          <span slot="badge" v-if="userFavorites.length">{{userFavorites.length}}</span>
+        <v-badge right color="blue darken-2" :class="{ bounce: badgeAnimated }">
+          <span slot="badge" v-if="userFavorites.length">{{
+            userFavorites.length
+          }}</span>
           Profile
         </v-badge>
       </v-btn>
@@ -127,7 +146,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
@@ -138,90 +157,90 @@ export default {
       authErrorSnackbarShown: false,
       timeout: 5000,
       badgeAnimated: false,
-      searchTerm: "",
-    };
+      searchTerm: '',
+    }
   },
   methods: {
-    ...mapActions(["signoutUser", "searchPosts"]),
+    ...mapActions(['signoutUser', 'searchPosts']),
     handleSearchPosts() {
       this.searchPosts({
         searchTerm: this.searchTerm,
-      });
+      })
     },
     goToSearchedPost(post_id) {
-      this.searchTerm = "";
-      this.$router.push(`/posts/${post_id}`);
-      this.$store.commit("CLEAR_SEARCH_RESULTS");
+      this.searchTerm = ''
+      this.$router.push(`/posts/${post_id}`)
+      this.$store.commit('CLEAR_SEARCH_RESULTS')
     },
     formattedDescription(desc) {
-      return desc.length > 30 ? `${desc.slice(0, 30)}...` : desc;
+      return desc.length > 30 ? `${desc.slice(0, 30)}...` : desc
     },
   },
   computed: {
     ...mapGetters([
-      "currentUser",
-      "authError",
-      "userFavorites",
-      "searchResults",
+      'currentUser',
+      'authError',
+      'userFavorites',
+      'searchResults',
     ]),
     navItems() {
       let items = [
-        { icon: "mdi-chat-plus-outline", title: "Posts", link: "/posts" },
-        { icon: "mdi-login", title: "Sign In", link: "/signin" },
-        { icon: "mdi-lead-pencil", title: "Sign Up", link: "/signup" },
-      ];
+        { icon: 'mdi-chat-plus-outline', title: 'Posts', link: '/posts' },
+        { icon: 'mdi-login', title: 'Sign In', link: '/signin' },
+        { icon: 'mdi-lead-pencil', title: 'Sign Up', link: '/signup' },
+      ]
 
       if (this.currentUser) {
         items = [
-          { icon: "mdi-chat-plus-outline", title: "Posts", link: "/posts" },
+          { icon: 'mdi-chat-plus-outline', title: 'Posts', link: '/posts' },
           {
-            icon: "mdi-pencil-plus-outline",
-            title: "Create Post",
-            link: "/post/add",
+            icon: 'mdi-pencil-plus-outline',
+            title: 'Create Post',
+            link: '/post/add',
           },
-        ];
+        ]
       }
-      return items;
+      return items
     },
     sidebarItems() {
       let items = [
-        { icon: "mdi-chat-plus-outline", title: "Posts", link: "/posts" },
-        { icon: "mdi-login", title: "Sign In", link: "/signin" },
-        { icon: "mdi-lead-pencil", title: "Sign Up", link: "/signup" },
-      ];
+        { icon: 'mdi-chat-plus-outline', title: 'Posts', link: '/posts' },
+        { icon: 'mdi-login', title: 'Sign In', link: '/signin' },
+        { icon: 'mdi-lead-pencil', title: 'Sign Up', link: '/signup' },
+      ]
       if (this.currentUser) {
         items = [
-          { icon: "mdi-chat-plus-outline", title: "Posts", link: "/posts" },
+          { icon: 'mdi-chat-plus-outline', title: 'Posts', link: '/posts' },
           {
-            icon: "mdi-pencil-plus-outline",
-            title: "Create Post",
-            link: "/post/add",
+            icon: 'mdi-pencil-plus-outline',
+            title: 'Create Post',
+            link: '/post/add',
           },
           {
-            icon: "mdi-account-box-outline",
-            title: "Profile",
-            link: "/profile",
+            icon: 'mdi-account-box-outline',
+            title: 'Profile',
+            link: '/profile',
           },
-        ];
+        ]
       }
-      return items;
+      return items
     },
   },
   watch: {
     currentUser(val, oldVal) {
-      if (!oldVal) this.authSnackbarShown = true;
+      if (!oldVal) this.authSnackbarShown = true
     },
     authError(val, oldVal) {
-      if (!oldVal) this.authErrorSnackbarShown = true;
+      if (!oldVal) this.authErrorSnackbarShown = true
     },
     userFavorites(val) {
       if (val) {
-        this.badgeAnimated = true;
-        setTimeout(() => (this.badgeAnimated = false), 1500);
+        this.badgeAnimated = true
+        setTimeout(() => (this.badgeAnimated = false), 1500)
       }
     },
   },
-};
+}
 </script>
 
 <style lang="stylus" scoped>
