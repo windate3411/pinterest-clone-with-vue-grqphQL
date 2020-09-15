@@ -72,6 +72,13 @@
 
       <v-spacer></v-spacer>
 
+      <v-btn text v-if="currentUser" to="/profile">
+        <v-icon class="hidden-sm-only" left>mdi-account-box-outline</v-icon>
+        <v-badge right color="blue darken-2">
+          <span slot="badge" v-if="userFavorites.length">{{userFavorites.length}}</span>
+          Profile
+        </v-badge>
+      </v-btn>
       <!-- right-side-menu -->
       <v-menu offset-y transition="slide-y-transition">
         <template v-slot:activator="{ on }">
@@ -115,7 +122,7 @@ export default {
     ...mapActions(["signoutUser"]),
   },
   computed: {
-    ...mapGetters(["currentUser", "authError"]),
+    ...mapGetters(["currentUser", "authError", "userFavorites"]),
     navItems() {
       let items = [
         { icon: "mdi-chat-plus-outline", title: "Posts", link: "/posts" },
@@ -130,11 +137,6 @@ export default {
             icon: "mdi-pencil-plus-outline",
             title: "Create Post",
             link: "/post/add",
-          },
-          {
-            icon: "mdi-account-box-outline",
-            title: "Profile",
-            link: "/profile",
           },
         ];
       }
