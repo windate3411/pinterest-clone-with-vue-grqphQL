@@ -49,4 +49,10 @@ const PostSchema = new moogoose.Schema({
   ],
 })
 
+// Create index for search function
+PostSchema.index({
+  // search all field using text
+  '$**': 'text',
+})
+
 module.exports = moogoose.model('Post', PostSchema)

@@ -67,6 +67,8 @@
         prepend-icon="mdi-magnify"
         placeholder="Search posts"
         single-line
+        v-model="searchTerm"
+        @input="handleSearchPosts"
         color="accent"
       ></v-text-field>
 
@@ -117,10 +119,16 @@ export default {
       authErrorSnackbarShown: false,
       timeout: 5000,
       badgeAnimated: false,
+      searchTerm: "",
     };
   },
   methods: {
-    ...mapActions(["signoutUser"]),
+    ...mapActions(["signoutUser", "searchPosts"]),
+    handleSearchPosts() {
+      this.searchPosts({
+        searchTerm: this.searchTerm,
+      });
+    },
   },
   computed: {
     ...mapGetters(["currentUser", "authError", "userFavorites"]),

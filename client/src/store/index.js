@@ -7,6 +7,7 @@ import {
   GET_CURRENT_USER,
   USER_SIGNUP,
   ADD_POST,
+  SEARCH_POSTS,
 } from '../queries.js'
 import router from '../router'
 Vue.use(Vuex)
@@ -45,6 +46,23 @@ export default new Vuex.Store({
         })
         .then(({ data }) => {
           commit('SET_POSTS', data.getPosts)
+          commit('SET_LOADING', false)
+        })
+        .catch((err) => {
+          console.log(err)
+          commit('SET_LOADING', false)
+        })
+    },
+    searchPosts: ({ commit }, payload) => {
+      commit('SET_LOADING', true)
+      apolloClient
+        .query({
+          query: SEARCH_POSTS,
+          variables: payload,
+        })
+        .then(({ data }) => {
+          console.log('search results', data.searchPosts)
+          // commit('SET_POSTS', data.searchPosts)
           commit('SET_LOADING', false)
         })
         .catch((err) => {

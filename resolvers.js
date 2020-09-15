@@ -62,6 +62,29 @@ module.exports = {
       const hasMorePosts = totalPosts > pageNum * pageSize
       return { posts, hasMorePosts }
     },
+    searchPosts: async (_, { searchTerm }, { Post }) => {
+      if (!searchTerm)
+        return await Post.find({}).sort({ createdDate: 'desc' }).populate({
+          path: 'createdBy',
+          model: 'User',
+        })
+      const searchResults = await Post.find(
+        // search posts using the given text
+        { $text: { $search: searchTerm } },
+
+        // assign each searchItem with a score to find the best match
+        { score: { $meta: 'textScore' } }
+
+        // sort the results for the results
+      )
+        .sort({
+          score: { $meta: 'textScore' },
+          likes: 'desc',
+        })
+        .limit(5)
+
+      return searchResults
+    },
   },
   Mutation: {
     signinUser: async (_, { username, password }, { User }) => {
