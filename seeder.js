@@ -1,8 +1,11 @@
 const moogoose = require('mongoose')
 const User = require('./models/User')
 const Post = require('./models/Post')
+const axios = require('axios')
+const faker = require('faker')
+const categories = ['Art', 'Education', 'Travel', 'Photography', 'Technology']
 require('dotenv').config({ path: 'variables.env' })
-console.log('uri', process.env.MONGO_URI)
+
 moogoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -10,20 +13,30 @@ moogoose
   })
   .then(async () => {
     console.log('Db connect')
-    await addNewPost()
+    await addNewPosts()
   })
   .catch((err) => {
     console.log(err)
   })
 
-async function addNewPost() {
-  const user = await User.findOne({ username: 'DannyWang' })
-  const newPost = await Post.create({
-    categories: ['Food'],
-    title: 'A tasty dinner',
-    imgUrl:
-      'https://images.pexels.com/photos/691114/pexels-photo-691114.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-    description: 'Picture of recipe I would like to prepare',
-    createdBy: user._id,
-  })
+async function addNewPosts() {
+  try {
+    const user = await User.findOne({ username: 'DannyWang' })
+    for (let i = 0; i < 30; i++) {
+      const newPost = await Post.create({
+        categories: randomCategories(categories),
+        title: faker.random.words(2),
+        imgUrl: faker.image.abstract(940, 650),
+        description: faker.lorem.paragraph(4),
+        createdBy: user._id,
+      })
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+function randomCategories(categories) {
+  const randomIndex = Math.floor(Math.random() * categories.length) || 1
+  return categories.sort(() => Math.random() - 0.5).slice(0, randomIndex)
 }
