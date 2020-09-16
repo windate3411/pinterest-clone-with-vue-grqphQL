@@ -2,30 +2,21 @@
   <v-container fluid class="text-center post-container" ref="postContainer">
     <!-- Posts Cards -->
     <v-row v-if="infiniteScrollPosts">
-      <v-col xs="12" sm="6" v-for="post in infiniteScrollPosts.posts" :key="post.id">
+      <v-col xs="12" sm="4" md="3" v-for="post in infiniteScrollPosts.posts" :key="post.id">
         <v-card hover class="mx-auto" fill-height @click.native="goToPost(post._id)">
-          <v-img :src="post.imgUrl" height="30vh" lazy-src></v-img>
-          <v-card-title>{{ post.title }}</v-card-title>
-          <v-card-actions>
-            <v-list-item class="grow">
-              <v-list-item-avatar color="grey darken-3">
-                <v-img class="elevation-6" :src="post.createdBy.avatar"></v-img>
-              </v-list-item-avatar>
-
-              <v-list-item-content>
-                <v-list-item-title>{{post.createdBy.username}}</v-list-item-title>
-              </v-list-item-content>
-
-              <v-row align="center" justify="end">
-                <v-icon class="mr-1">mdi-heart</v-icon>
+          <div class="img-container">
+            <v-img :src="post.imgUrl" height="30vh" lazy-src></v-img>
+            <div class="overlay">
+              <h3>{{ post.title }}</h3>
+              <div>
+                <v-icon class="mr-1" color="red">mdi-heart</v-icon>
                 <span class="subheading mr-2">{{ post.likes }}</span>
                 <span class="mr-1">·</span>
-                <v-icon class="mr-1">mdi-chat</v-icon>
+                <v-icon class="mr-1" color="white">mdi-chat</v-icon>
                 <span class="subheading">{{ post.messages.length }}</span>
-                <v-icon right>mdi-chevron-down</v-icon>
-              </v-row>
-            </v-list-item>
-          </v-card-actions>
+              </div>
+            </div>
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -123,6 +114,33 @@ export default {
   width 20px
   height 20px
   animation spin 2s linear infinite
+
+
+.img-container
+  position relative
+  cursor zoom-in
+  
+  .overlay
+    background-color rgba(0,0,0,0.3)
+    opacity 0
+    height 100%
+    width 100%
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
+    color white
+    display flex
+    flex-direction column
+    align-items center
+    justify-content center
+    padding 1em 1.2em
+    
+  &:hover
+    .overlay
+      opacity 1
+
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
