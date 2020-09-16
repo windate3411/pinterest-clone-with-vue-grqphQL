@@ -196,7 +196,7 @@ export default new Vuex.Store({
   },
   modules: {},
   getters: {
-    posts: (state) => state.posts,
+    posts: (state) => state.posts.slice(0, 5),
     loading: (state) => state.loading,
     currentUser: (state) => state.currentUser,
     error: (state) => state.error,
