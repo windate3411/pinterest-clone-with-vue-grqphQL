@@ -46,8 +46,14 @@ To be finished
 
 ## Getting Started
 
-If you wanna try out the application , you can either [visit the site](https://vinterest-danny.vercel.app/) or user the following
-instructions to run on your local machine.
+If you wanna try out the application , you can either [visit the site](https://vinterest-danny.vercel.app/) using this account
+
+```
+username: DannyWang
+password: 12345678
+```
+
+or use the following instructions to run on your local machine.
 
 ### Prerequisites
 
