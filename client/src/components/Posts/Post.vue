@@ -148,6 +148,7 @@ export default {
       if (window.innerWidth > 500) this.dialog = !this.dialog;
     },
     checkIfOwnMessage(message) {
+      if (!this.currentUser) return
       return message.messageUser._id === this.currentUser._id;
     },
     checkIfLikedPost(post_id) {

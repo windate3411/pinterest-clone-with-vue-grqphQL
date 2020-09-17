@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div class="observer" ref="loadingObserver" v-if="showMoreEnabled"></div>
+    <div class="observer" ref="loadingObserver" v-show="showMoreEnabled && imgList.length"></div>
   </div>
 </template>
 
