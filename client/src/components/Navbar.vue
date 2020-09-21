@@ -64,8 +64,6 @@
         <!-- <router-link to="/" tag="span" style="cursor:pointer" color="primary">Vinterest</router-link> -->
       </v-toolbar-title>
 
-      <!-- <v-spacer></v-spacer> -->
-
       <!-- search-input -->
       <v-text-field
         hide-details
@@ -75,7 +73,7 @@
         rounded
         filled
         full-width
-        class="mx-2"
+        class="mx-4"
         dense
         v-model="searchTerm"
         @input="handleSearchPosts"
@@ -102,8 +100,6 @@
           </v-list-item>
         </v-list>
       </v-card>
-
-      <!-- <v-spacer></v-spacer> -->
 
       <v-btn text v-if="currentUser" to="/profile">
         <v-icon class="hidden-sm-only" left>mdi-account-box-outline</v-icon>
