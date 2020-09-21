@@ -5,25 +5,16 @@
       <v-icon left>mdi-check</v-icon>
       <span>You've successfully signed in!</span>
       <template v-slot:action="{ attrs }">
-        <v-btn dark text v-bind="attrs" @click="authSnackbarShown = false"
-          >X</v-btn
-        >
+        <v-btn dark text v-bind="attrs" @click="authSnackbarShown = false">X</v-btn>
       </template>
     </v-snackbar>
 
     <!-- auth error snackbar -->
-    <v-snackbar
-      v-model="authErrorSnackbarShown"
-      :timeout="timeout"
-      color="error"
-      v-if="authError"
-    >
+    <v-snackbar v-model="authErrorSnackbarShown" :timeout="timeout" color="error" v-if="authError">
       <v-icon left>mdi-cancel</v-icon>
       <span>{{ authError.message }}</span>
       <template v-slot:action="{ attrs }">
-        <v-btn dark text v-bind="attrs" @click="authErrorSnackbarShown = false"
-          >X</v-btn
-        >
+        <v-btn dark text v-bind="attrs" @click="authErrorSnackbarShown = false">X</v-btn>
       </template>
     </v-snackbar>
 
@@ -39,11 +30,7 @@
       <!-- side-bar-links -->
       <v-list rounded class="mt-5">
         <v-list-item-group v-model="sideBarSeletedItem" color="primary">
-          <v-list-item
-            v-for="(item, i) in sidebarItems"
-            :key="i"
-            :to="item.link"
-          >
+          <v-list-item v-for="(item, i) in sidebarItems" :key="i" :to="item.link">
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
@@ -65,25 +52,31 @@
     </v-navigation-drawer>
 
     <!-- nav -->
-    <v-app-bar color="primary" dense dark>
-      <v-app-bar-nav-icon
-        @click="sidebarShown = !sidebarShown"
-      ></v-app-bar-nav-icon>
+    <v-app-bar color="white" elevation="3" fixed>
+      <v-app-bar-nav-icon @click="sidebarShown = !sidebarShown"></v-app-bar-nav-icon>
 
       <v-toolbar-title>
-        <router-link to="/" tag="span" style="cursor:pointer"
-          >Vinterest</router-link
-        >
+        <div class="logo">
+          <router-link to="/" tag="span" style="cursor:pointer" color="primary">
+            <v-img contain :src="require('../assets/images/logo.jpg')" height="100%" width="100px"></v-img>
+          </router-link>
+        </div>
+        <!-- <router-link to="/" tag="span" style="cursor:pointer" color="primary">Vinterest</router-link> -->
       </v-toolbar-title>
 
-      <v-spacer></v-spacer>
+      <!-- <v-spacer></v-spacer> -->
 
       <!-- search-input -->
       <v-text-field
         hide-details
-        prepend-icon="mdi-magnify"
+        prepend-inner-icon="mdi-magnify"
         placeholder="Search posts in Vinterest"
         single-line
+        rounded
+        filled
+        full-width
+        class="mx-2"
+        dense
         v-model="searchTerm"
         @input="handleSearchPosts"
         color="accent"
@@ -100,29 +93,33 @@
           >
             <v-list-item-title>
               {{ post.title }}
-              <span class="font-weight-thin ml-2">{{
+              <span class="font-weight-thin ml-2">
+                {{
                 formattedDescription(post.description)
-              }}</span>
+                }}
+              </span>
             </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-card>
 
-      <v-spacer></v-spacer>
+      <!-- <v-spacer></v-spacer> -->
 
       <v-btn text v-if="currentUser" to="/profile">
         <v-icon class="hidden-sm-only" left>mdi-account-box-outline</v-icon>
         <v-badge right color="blue darken-2" :class="{ bounce: badgeAnimated }">
-          <span slot="badge" v-if="userFavorites.length">{{
+          <span slot="badge" v-if="userFavorites.length">
+            {{
             userFavorites.length
-          }}</span>
+            }}
+          </span>
           Profile
         </v-badge>
       </v-btn>
       <!-- right-side-menu -->
       <v-menu offset-y transition="slide-y-transition">
         <template v-slot:activator="{ on }">
-          <v-btn text v-on="on" color="white" class="hidden-sm-and-down">
+          <v-btn text v-on="on" color="gray" class="hidden-sm-and-down">
             <v-icon left>mdi-chevron-down</v-icon>
             <span>Menu</span>
           </v-btn>
@@ -158,6 +155,7 @@ export default {
       timeout: 5000,
       badgeAnimated: false,
       searchTerm: '',
+      logo: require('../assets/images/logo.jpg')
     }
   },
   methods: {
