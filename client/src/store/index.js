@@ -43,6 +43,12 @@ export default new Vuex.Store({
     CLEAR_SEARCH_RESULTS: (state) => {
       state.searchResults = []
     },
+    SET_SIGNIN_DIALOG: (state) => {
+      state.signinDialogShown = !state.signinDialogShown
+    },
+    SET_SIGNUP_DIALOG: (state) => {
+      state.signupDialogShown = !state.signupDialogShown
+    },
   },
   actions: {
     getPosts: ({ commit }) => {
@@ -123,7 +129,7 @@ export default new Vuex.Store({
       localStorage.setItem('token', '')
 
       // set loading when logingin
-      // commit('SET_LOADING', true)
+      commit('SET_LOADING', true)
 
       apolloClient
         .mutate({
@@ -132,12 +138,12 @@ export default new Vuex.Store({
         })
         .then(async ({ data }) => {
           localStorage.setItem('token', data.signinUser.token)
-          // commit('SET_LOADING', false)
+          commit('SET_LOADING', false)
           await router.go()
           console.log(data.signinUser)
         })
         .catch((err) => {
-          // commit('SET_LOADING', false)
+          commit('SET_LOADING', false)
           commit('SET_ERROR', err)
           console.log(err)
         })
@@ -191,7 +197,7 @@ export default new Vuex.Store({
       // end apollo session
       await apolloClient.resetStore()
 
-      router.push('/signin')
+      router.push('/')
     },
   },
   modules: {},

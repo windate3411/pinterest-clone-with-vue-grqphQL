@@ -1,11 +1,5 @@
 <template>
-  <v-container class="mt-5 text-center">
-    <v-row>
-      <v-col xs="12" md="6" offset="sm-3">
-        <h1>Welcome Back My friend</h1>
-      </v-col>
-    </v-row>
-
+  <v-container class="mt-5 text-center" fluid>
     <!-- form alert -->
     <v-row v-if="error">
       <v-col xs="12" sm="6" offset="sm-3">
@@ -16,54 +10,76 @@
     <v-row>
       <v-col xs="12" sm="6" offset="sm-3">
         <v-card class="elevation-12">
-          <v-toolbar color="primary" dark flat>
-            <v-toolbar-title class="text-center">Sign in to Vinterest</v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-form v-model="isFormValid" lazy-validation ref="form">
-              <v-text-field
-                label="Username"
-                name="username"
-                :rules="usernameRules"
-                prepend-icon="mdi-account"
-                type="text"
-                v-model="username"
-              ></v-text-field>
-
-              <v-text-field
-                id="password"
-                label="Password"
-                name="password"
-                prepend-icon="mdi-lock"
-                type="password"
-                :rules="passwordRules"
-                v-model="password"
-              ></v-text-field>
-            </v-form>
-          </v-card-text>
-          <v-card-actions>
+          <v-container>
             <v-row>
-              <v-col xs="12">
-                <v-btn
-                  color="accent"
-                  @click="handleSigninSubmit"
-                  :loading="loading"
-                  :disabled="loading || !isFormValid"
-                >
-                  <template v-slot:loader>
-                    <span class="custom-loader">
-                      <v-icon light>mdi-cached</v-icon>
-                    </span>
-                  </template>
-                  Sign in
-                </v-btn>
-                <h4 class="grey--text mt-3">
-                  Doesn't have an account?
-                  <router-link class="ml-2" to="/signup">Sign up</router-link>
-                </h4>
+              <v-col xs="3">
+                <div class="flex-container">
+                  <v-img
+                    contain
+                    :src="require('../../assets/images/logo.jpg')"
+                    height="100%"
+                    width="100px"
+                  ></v-img>
+                </div>
               </v-col>
             </v-row>
-          </v-card-actions>
+            <v-row justify="center">
+              <h1 class="text-center">Log In</h1>
+            </v-row>
+            <v-card-text>
+              <v-form v-model="isFormValid" lazy-validation ref="form">
+                <v-text-field
+                  name="username"
+                  placeholder="Uesrname"
+                  :rules="usernameRules"
+                  prepend-inner-icon="mdi-account"
+                  type="text"
+                  height="48"
+                  width="250"
+                  rounded
+                  v-model="username"
+                  outlined
+                ></v-text-field>
+
+                <v-text-field
+                  id="password"
+                  label="Password"
+                  name="password"
+                  prepend-icon="mdi-lock"
+                  type="password"
+                  :rules="passwordRules"
+                  rounded
+                  height="48"
+                  v-model="password"
+                ></v-text-field>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-row>
+                <v-col xs="12">
+                  <v-btn
+                    color="primary"
+                    @click="handleSigninSubmit"
+                    :loading="loading"
+                    :disabled="loading || !isFormValid"
+                    rounded
+                    width="80%"
+                  >
+                    <template v-slot:loader>
+                      <span class="custom-loader">
+                        <v-icon light>mdi-cached</v-icon>
+                      </span>
+                    </template>
+                    <span class="font-weight-bold text-capitalize">Log in</span>
+                  </v-btn>
+                  <h4 class="grey--text mt-3">
+                    Doesn't have an account?
+                    <router-link class="ml-2" to="/signup">Sign up</router-link>
+                  </h4>
+                </v-col>
+              </v-row>
+            </v-card-actions>
+          </v-container>
         </v-card>
       </v-col>
     </v-row>
@@ -114,10 +130,19 @@ export default {
 </script>
 
 <style scoped>
+
+.flex-container{
+  display: flex;
+  justify-content: center;
+  width: 120px;
+  height: 80px;
+}
+
 .custom-loader {
   animation: loader 1s infinite;
   display: flex;
 }
+
 @-moz-keyframes loader {
   from {
     transform: rotate(0);

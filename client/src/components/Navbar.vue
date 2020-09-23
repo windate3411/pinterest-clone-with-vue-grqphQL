@@ -3,7 +3,8 @@
     <!-- auth snackbar -->
     <v-snackbar v-model="authSnackbarShown" :timeout="timeout" color="success">
       <v-icon left>mdi-check</v-icon>
-      <span>You've successfully signed in!</span>
+      <span v-if="currentUser">You've successfully signed in!</span>
+      <span v-else>You've successfully logged out!</span>
       <template v-slot:action="{ attrs }">
         <v-btn dark text v-bind="attrs" @click="authSnackbarShown = false">X</v-btn>
       </template>
@@ -17,6 +18,16 @@
         <v-btn dark text v-bind="attrs" @click="authErrorSnackbarShown = false">X</v-btn>
       </template>
     </v-snackbar>
+
+    <!--signin modal -->
+    <v-dialog v-model="loginDialog" width="450">
+      <SigninModal @toggleSignupModal="toggleModal" />
+    </v-dialog>
+
+    <!-- signup modal -->
+    <v-dialog v-model="signupDialog" width="450">
+      <SignupModal @toggleSigninModal="toggleModal" />
+    </v-dialog>
 
     <!-- sidebar -->
     <v-navigation-drawer app temporary fixed v-model="sidebarShown">
@@ -38,13 +49,29 @@
               <v-list-item-title v-text="item.title"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item class="mt-2" v-if="!currentUser" @click.stop="loginDialog = true">
+            <v-list-item-icon>
+              <v-icon v-text="'mdi-login'"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="'Log In'"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="mt-2" v-if="!currentUser" @click.stop="signupDialog = true">
+            <v-list-item-icon>
+              <v-icon v-text="'mdi-lead-pencil'"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="'Sign up'"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
           <v-divider></v-divider>
           <v-list-item class="mt-2" v-if="currentUser" @click="signoutUser">
             <v-list-item-icon>
               <v-icon v-text="'mdi-exit-to-app'"></v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title v-text="'Sign Out'"></v-list-item-title>
+              <v-list-item-title v-text="'Log Out'"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -140,6 +167,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import SigninModal from "./Auth/SigninModal.vue";
+import SignupModal from "./Auth/SignupModal.vue";
 
 export default {
   data() {
@@ -151,8 +180,13 @@ export default {
       timeout: 5000,
       badgeAnimated: false,
       searchTerm: '',
-      logo: require('../assets/images/logo.jpg')
+      loginDialog: false,
+      signupDialog: false
     }
+  },
+  components: {
+    SigninModal,
+    SignupModal
   },
   methods: {
     ...mapActions(['signoutUser', 'searchPosts']),
@@ -169,6 +203,10 @@ export default {
     formattedDescription(desc) {
       return desc.length > 30 ? `${desc.slice(0, 30)}...` : desc
     },
+    toggleModal() {
+      this.loginDialog = !this.loginDialog
+      this.signupDialog = !this.signupDialog
+    }
   },
   computed: {
     ...mapGetters([
@@ -180,8 +218,6 @@ export default {
     navItems() {
       let items = [
         { icon: 'mdi-chat-plus-outline', title: 'Posts', link: '/posts' },
-        { icon: 'mdi-login', title: 'Sign In', link: '/signin' },
-        { icon: 'mdi-lead-pencil', title: 'Sign Up', link: '/signup' },
       ]
 
       if (this.currentUser) {
@@ -198,9 +234,7 @@ export default {
     },
     sidebarItems() {
       let items = [
-        { icon: 'mdi-chat-plus-outline', title: 'Posts', link: '/posts' },
-        { icon: 'mdi-login', title: 'Sign In', link: '/signin' },
-        { icon: 'mdi-lead-pencil', title: 'Sign Up', link: '/signup' },
+        { icon: 'mdi-chat-plus-outline', title: 'Posts', link: '/posts' }
       ]
       if (this.currentUser) {
         items = [
@@ -222,7 +256,7 @@ export default {
   },
   watch: {
     currentUser(val, oldVal) {
-      if (!oldVal) this.authSnackbarShown = true
+      if (!oldVal || !val) this.authSnackbarShown = true
     },
     authError(val, oldVal) {
       if (!oldVal) this.authErrorSnackbarShown = true
