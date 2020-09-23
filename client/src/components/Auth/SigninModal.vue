@@ -111,42 +111,39 @@ export default {
 
 <style lang="stylus" scoped>
 
-.flex-container{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  overflow: hidden;
-  height: 70vh;
-}
+.flex-container
+  display flex
+  flex-direction column
+  align-items center
+  width 100%
+  overflow hidden
+  height 70vh
 
-.message {
-  font-size: 16px;
-  color: rgb(51, 51, 51);
-  font-weight: normal;
-  margin: 0 auto 18px;
-  width: 270px;
-}
+.message
+  font-size 16px
+  color rgb(51, 51, 51)
+  font-weight normal
+  margin 0 auto 18px
+  width 270px
 
-.router-link-active, .router-link-exact-active, a {
-  text-decoration: none;
-}
+.router-link-active
+.router-link-exact-active
+a 
+  text-decoration none
 
-.custom-loader {
-  animation: loader 1s infinite;
-  display: flex;
-}
 
-.footer-hint {
-  font-size: 11px;
-  font-weight: normal;
-  color: rgb(118, 118, 118);
-}
+.custom-loader
+  animation loader 1s infinite
+  display flex
 
-::v-deep .v-text-field {
+.footer-hint 
+  font-size 11px
+  font-weight normal
+  color rgb(118, 118, 118)
+
+::v-deep .v-text-field 
   width: 100%;
   border-radius: 16px;
-}
 
 
 @-moz-keyframes loader {

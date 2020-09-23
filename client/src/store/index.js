@@ -196,8 +196,6 @@ export default new Vuex.Store({
       localStorage.setItem('token', '')
       // end apollo session
       await apolloClient.resetStore()
-
-      router.push('/')
     },
   },
   modules: {},
