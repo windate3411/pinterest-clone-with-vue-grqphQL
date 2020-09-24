@@ -1,19 +1,8 @@
 <template>
   <v-container v-if="getPost" class="mt-3">
-    <v-row>
-      <v-col xs="12">
-        <v-card>
-          <!-- card title -->
-          <v-card-title>
-            <h1>{{getPost.title}}</h1>
-            <v-btn v-if="currentUser" @click="handleLikeToggle" large text>
-              <v-icon large :color="checkIfLikedPost(post_id)?'red':'grey'">mdi-heart</v-icon>
-            </v-btn>
-            <h3 class="ml-3 font-weight-thin">{{getPost.likes}} Likes</h3>
-            <v-spacer></v-spacer>
-            <v-icon large color="info" @click="goToPrevPage">mdi-arrow-left</v-icon>
-          </v-card-title>
-
+    <v-card class="mt-5 rounded-xl">
+      <v-row>
+        <v-col xs="6" md="6" offset="xs-3">
           <!-- img tooltip -->
           <v-tooltip bottom>
             <span>Click to enlarge the image</span>
@@ -22,8 +11,9 @@
                 :src="getPost.imgUrl"
                 v-bind="attrs"
                 v-on="on"
-                height="50vh"
+                height="100%"
                 @click="toggleImgaeDialog"
+                class="rounded-xl mx-3"
               ></v-img>
             </template>
           </v-tooltip>
@@ -34,75 +24,87 @@
               <v-img :src="getPost.imgUrl" height="80vh"></v-img>
             </v-card>
           </v-dialog>
-
-          <!-- card content -->
-          <v-card-text>
-            <span v-for="(category,index) in getPost.categories" :key="index">
-              <v-chip class="mr-3 text--white" color="accent">{{category}}</v-chip>
-            </span>
-            <h3 class="mt-2">{{getPost.description}}</h3>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <!-- message section -->
-    <div class="message-container mt-5">
-      <!-- message textarea -->
-      <v-row v-if="currentUser">
-        <v-col xs="12">
-          <v-form
-            @submit.prevent="handleAddPosrMessage"
-            ref="form"
-            lazy-validation
-            v-model="isFormValidated"
+        </v-col>
+        <v-col xs="6" md="6" offset="xs-3">
+          <v-row
+            justify="space-between operator-wrapper text-center"
+            class="px-5"
           >
-            <v-row>
-              <v-col xs="12">
+            <div class="operators">
+              <v-icon>mdi-download</v-icon>
+              <v-icon class="ml-2">mdi-share</v-icon>
+            </div>
+            <v-icon
+              :color="checkIfLikedPost(post_id) ? 'red' : 'grey'"
+              v-if="currentUser"
+              @click="handleLikeToggle"
+              >mdi-heart</v-icon
+            >
+          </v-row>
+          <div class="flex-container">
+            <h1 class="text-center">{{ getPost.title }}</h1>
+            <p>{{ getPost.description }}</p>
+            <h2 class="comments-section-title">
+              <span>{{ getPost.messages.length }} </span>Comments
+            </h2>
+            <!-- display post messages  -->
+            <div
+              class="message-wrapper"
+              v-for="message in getPost.messages"
+              :key="message.id"
+            >
+              <div class="message-user-image">
+                <v-avatar size="36">
+                  <v-img :src="message.messageUser.avatar"></v-img>
+                </v-avatar>
+              </div>
+              <div class="message-content-box">
+                <div class="message-info">
+                  <h2 class="message-user-name">
+                    {{ message.messageUser.username }}
+                  </h2>
+                  <p class="message-time">
+                    {{ getTimeFromNow(message.messageDate) }}
+                  </p>
+                </div>
+                <div class="message-content">
+                  <span>
+                    {{ message.messageBody }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="message-input-wrapper d-flex align-center mt-2"
+              v-if="currentUser"
+            >
+              <v-form
+                @submit.prevent="handleAddPosrMessage"
+                ref="form"
+                lazy-validation
+                v-model="isFormValidated"
+              >
                 <v-text-field
                   clearable
                   :append-outer-icon="messageBody && 'mdi-send'"
-                  prepend-icon="mdi-email"
-                  label="Add your thought to this Post"
+                  label="Leave a comment..."
                   @click:append-outer="handleAddPosrMessage"
                   v-model="messageBody"
                   :rules="addPostMessageRules"
                   maxlength="60"
                   counter
+                  rounded
+                  height="48"
+                  outlined
+                  prepend-icon="mdi-message-outline"
+                  full-width
                 ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-form>
+              </v-form>
+            </div>
+          </div>
         </v-col>
       </v-row>
-
-      <!-- display post messages  -->
-      <v-row>
-        <v-col xs="12">
-          <v-list subheader two-line>
-            <v-subheader inset>Messages ({{getPost.messages.length}})</v-subheader>
-            <template v-for="message in getPost.messages">
-              <v-divider :key="message.id"></v-divider>
-              <v-list-item inset :key="message.title">
-                <v-list-item-avatar>
-                  <v-img :src="message.messageUser.avatar"></v-img>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title>{{message.messageBody}}</v-list-item-title>
-                  <v-list-item-subtitle>{{message.messageUser.username}}</v-list-item-subtitle>
-                  <span class="grey--text text--lighten-1 hidden-xs-only">{{message.messageDate}}</span>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-icon
-                    :color="checkIfOwnMessage(message) ? 'accent': 'grey'"
-                  >mdi-chat-processing-outline</v-icon>
-                </v-list-item-action>
-              </v-list-item>
-            </template>
-          </v-list>
-        </v-col>
-      </v-row>
-    </div>
+    </v-card>
   </v-container>
 </template>
 
@@ -112,23 +114,28 @@ import {
   ADD_POST_MESSAGE,
   LIKE_POST,
   UNLIKE_POST,
-} from "../../queries";
-import { mapGetters, mapActions } from "vuex";
+} from '../../queries'
+import { mapGetters, mapActions } from 'vuex'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
 
 export default {
-  name: "Post",
-  props: ["post_id"],
+  name: 'Post',
+  props: ['post_id'],
   data() {
     return {
       dialog: false,
-      messageBody: "",
+      messageBody: '',
       hasLiked: false,
       isFormValidated: true,
       addPostMessageRules: [
         (value) =>
-          value.length < 60 || "Message must be less than 60 characters",
+          value.length < 60 || 'Message must be less than 60 characters',
       ],
-    };
+      timetest: dayjs(1600144720741).fromNow(),
+    }
   },
   apollo: {
     getPost: {
@@ -136,39 +143,39 @@ export default {
       variables() {
         return {
           post_id: this.post_id,
-        };
+        }
       },
     },
   },
   methods: {
     goToPrevPage() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     toggleImgaeDialog() {
-      if (window.innerWidth > 500) this.dialog = !this.dialog;
+      if (window.innerWidth > 500) this.dialog = !this.dialog
     },
     checkIfOwnMessage(message) {
       if (!this.currentUser) return
-      return message.messageUser._id === this.currentUser._id;
+      return message.messageUser._id === this.currentUser._id
     },
     checkIfLikedPost(post_id) {
       if (
         this.userFavorites &&
         this.userFavorites.some((post) => post._id === post_id)
       ) {
-        return (this.hasLiked = true);
+        return (this.hasLiked = true)
       }
-      return (this.hasLiked = false);
+      return (this.hasLiked = false)
     },
     handleLikeToggle() {
-      return this.hasLiked ? this.handleUnLikePost() : this.handleLikePost();
+      return this.hasLiked ? this.handleUnLikePost() : this.handleLikePost()
     },
     handleLikePost() {
-      const { post_id, messageBody, currentUser } = this;
+      const { post_id, messageBody, currentUser } = this
       const variables = {
         post_id,
         username: currentUser.username,
-      };
+      }
       this.$apollo
         .mutate({
           mutation: LIKE_POST,
@@ -179,32 +186,32 @@ export default {
               variables: {
                 post_id: this.post_id,
               },
-            });
-            data.getPost.likes += 1;
+            })
+            data.getPost.likes += 1
             cache.writeQuery({
               query: GET_POST,
               variables: {
                 post_id: this.post_id,
               },
               data,
-            });
+            })
           },
         })
         .then(({ data }) => {
           const updatedUser = {
             ...currentUser,
             favorites: data.likePost.favorites,
-          };
-          this.$store.commit("SET_CURRENT_USER", updatedUser);
+          }
+          this.$store.commit('SET_CURRENT_USER', updatedUser)
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
     },
     handleUnLikePost() {
-      const { post_id, messageBody, currentUser } = this;
+      const { post_id, messageBody, currentUser } = this
       const variables = {
         post_id,
         username: currentUser.username,
-      };
+      }
       this.$apollo
         .mutate({
           mutation: UNLIKE_POST,
@@ -215,34 +222,34 @@ export default {
               variables: {
                 post_id: this.post_id,
               },
-            });
-            data.getPost.likes -= 1;
+            })
+            data.getPost.likes -= 1
             cache.writeQuery({
               query: GET_POST,
               variables: {
                 post_id: this.post_id,
               },
               data,
-            });
+            })
           },
         })
         .then(({ data }) => {
           const updatedUser = {
             ...currentUser,
             favorites: data.unLikePost.favorites,
-          };
-          this.$store.commit("SET_CURRENT_USER", updatedUser);
+          }
+          this.$store.commit('SET_CURRENT_USER', updatedUser)
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
     },
     handleAddPosrMessage() {
-      if (!this.$refs.form.validate()) return;
-      const { post_id, messageBody, currentUser } = this;
+      if (!this.$refs.form.validate()) return
+      const { post_id, messageBody, currentUser } = this
       const variables = {
         post_id,
         messageBody,
         user_id: currentUser._id,
-      };
+      }
       this.$apollo
         .mutate({
           mutation: ADD_POST_MESSAGE,
@@ -254,30 +261,111 @@ export default {
               variables: {
                 post_id,
               },
-            });
+            })
 
             // add the new message to the existing array
-            data.getPost.messages.unshift(addPostMessage);
+            data.getPost.messages.unshift(addPostMessage)
             cache.writeQuery({
               query: GET_POST,
               variables: {
                 post_id,
               },
               data,
-            });
+            })
           },
         })
         .then(({ data }) => {
-          console.log(data.addPostMessage);
-          this.$refs.form.reset();
+          console.log(data.addPostMessage)
+          this.$refs.form.reset()
         })
         .then((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
+    },
+    getTimeFromNow(value) {
+      return dayjs(Number(value)).fromNow()
     },
   },
   computed: {
-    ...mapGetters(["currentUser", "userFavorites"]),
+    ...mapGetters(['currentUser', 'userFavorites']),
   },
-};
+  filters: {
+    timeFormat: function(value) {
+      return 'Danny Wang'
+    },
+    capitalize: function(value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    },
+  },
+}
 </script>
+
+<style lang="stylus" scoped>
+
+.operator-wrapper
+  width 80%
+  margin 0 auto
+
+::v-deep .v-text-field
+  width 350px
+  border-radius: 16px;
+
+.flex-container
+  display flex
+  flex-direction column
+  align-items center
+  padding 15px 10px
+
+.comments-section-title
+  font-size 16px
+  color #111111
+  border-bottom 3px solid #222
+  width 92px
+  margin-bottom 5px
+  font-weight 700
+
+.message-input-wrapper
+  display flex
+  align-items center
+  margin 5px 0
+  width 350px
+
+.message-wrapper
+  display flex
+  align-items center
+  margin 5px 0
+
+  .message-user-image
+    margin-right 15px
+    font-size 14px
+    color #111111
+
+  .message-content-box
+    border 2px solid #ddd
+    border-radius 16px
+    background-color #fff
+    padding 12px
+    width 300px
+    min-height 60px
+
+  .message-info
+    display flex
+    justify-content space-between
+    width 100%
+    font-size 14px
+    height 18px
+
+    .message-user-name
+      font-size 14px
+
+    .message-time
+      font-size 14px
+      color #767676
+
+  .message-content
+    span
+      font-size 12px
+      color #111111
+</style>
