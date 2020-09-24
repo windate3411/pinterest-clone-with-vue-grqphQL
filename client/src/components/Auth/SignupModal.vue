@@ -88,7 +88,7 @@
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "SignUp",
+  name: "SignUpModal",
   data() {
     return {
       username: "",
