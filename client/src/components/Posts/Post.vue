@@ -1,5 +1,71 @@
 <template>
   <v-container v-if="getPost" class="mt-3">
+    <!-- social sharing dialog -->
+    <v-dialog hide-overlay width="360" v-model="socialSharingDialog">
+      <v-card rounded>
+        <v-container class="sharing-dialog-wrapper">
+          <v-row justify="center">
+            <v-card-title class="text-center">Share this post</v-card-title>
+          </v-row>
+          <v-row>
+            <v-col cols="12" class="d-flex justify-center">
+              <ShareNetwork
+                network="twitter"
+                :url="getPost.imgUrl"
+                :title="getPost.title"
+                :description="getPost.description"
+                :hashtags="getPost.categories.join(',')"
+              >
+                <div class="social-icon-wrapper">
+                  <i class="fab fa-twitter"></i>
+                  <span>Twitter</span>
+                </div>
+              </ShareNetwork>
+              <ShareNetwork
+                network="line"
+                :url="getPost.imgUrl"
+                :title="getPost.title"
+                :description="getPost.description"
+              >
+                <div class="social-icon-wrapper">
+                  <i class="fab fa-line"></i>
+                  <span>Line</span>
+                </div>
+              </ShareNetwork>
+              <ShareNetwork
+                network="facebook"
+                :url="getPost.imgUrl"
+                :title="getPost.title"
+                :description="getPost.description"
+                :quote="getPost.description"
+                :hashtags="getPost.categories.join(',')"
+              >
+                <div class="social-icon-wrapper">
+                  <i class="fab fa-facebook"></i>
+                  <span>Facebook</span>
+                </div>
+              </ShareNetwork>
+              <ShareNetwork
+                network="email"
+                :url="getPost.imgUrl"
+                :title="getPost.title"
+                :description="getPost.description"
+                class="mr-1"
+              >
+                <div class="social-icon-wrapper">
+                  <i class="far fa-envelope"></i>
+                  <span>Email</span>
+                </div>
+              </ShareNetwork>
+              <div class="social-icon-wrapper">
+                <i class="fas fa-link"></i>
+                <span>Copy link</span>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <v-card class="mt-5 rounded-xl">
       <v-row>
         <v-col xs="6" md="6" offset="xs-3">
@@ -19,7 +85,7 @@
           </v-tooltip>
 
           <!-- img dialog -->
-          <v-dialog v-model="dialog">
+          <v-dialog v-model="imageDialog">
             <v-card>
               <v-img :src="getPost.imgUrl" height="80vh"></v-img>
             </v-card>
@@ -32,7 +98,9 @@
           >
             <div class="operators">
               <v-icon @click="downloadImage">mdi-download</v-icon>
-              <v-icon class="ml-2">mdi-share</v-icon>
+              <v-icon class="ml-2" @click="toggleSharingDialog"
+                >mdi-share</v-icon
+              >
             </div>
             <v-icon
               :color="checkIfLikedPost(post_id) ? 'red' : 'grey'"
@@ -90,7 +158,6 @@
                   label="Leave a comment..."
                   @click:append-outer="handleAddPosrMessage"
                   v-model="messageBody"
-                  :rules="addPostMessageRules"
                   maxlength="60"
                   counter
                   rounded
@@ -126,7 +193,8 @@ export default {
   props: ['post_id'],
   data() {
     return {
-      dialog: false,
+      imageDialog: false,
+      socialSharingDialog: false,
       messageBody: '',
       hasLiked: false,
       isFormValidated: true,
@@ -134,7 +202,6 @@ export default {
         (value) =>
           value.length < 60 || 'Message must be less than 60 characters',
       ],
-      timetest: dayjs(1600144720741).fromNow(),
     }
   },
   apollo: {
@@ -151,17 +218,17 @@ export default {
     goToPrevPage() {
       this.$router.go(-1)
     },
-    async downloadImage(){
+    async downloadImage() {
       try {
         const response = await this.axios({
           url: this.getPost.imgUrl,
           method: 'GET',
-          responseType:'blob'
+          responseType: 'blob',
         })
         const fileUrl = window.URL.createObjectURL(new Blob([response.data]))
         const fileLink = document.createElement('a')
         fileLink.href = fileUrl
-        fileLink.setAttribute('download','image.jpg')
+        fileLink.setAttribute('download', 'image.jpg')
         document.body.appendChild(fileLink)
         fileLink.click()
       } catch (error) {
@@ -169,7 +236,10 @@ export default {
       }
     },
     toggleImgaeDialog() {
-      if (window.innerWidth > 500) this.dialog = !this.dialog
+      if (window.innerWidth > 500) this.imageDialog = !this.imageDialog
+    },
+    toggleSharingDialog() {
+      this.socialSharingDialog = true
     },
     checkIfOwnMessage(message) {
       if (!this.currentUser) return
@@ -260,44 +330,44 @@ export default {
         .catch((err) => console.log(err))
     },
     handleAddPosrMessage() {
-      if (!this.$refs.form.validate()) return
-      const { post_id, messageBody, currentUser } = this
-      const variables = {
-        post_id,
-        messageBody,
-        user_id: currentUser._id,
-      }
-      this.$apollo
-        .mutate({
-          mutation: ADD_POST_MESSAGE,
-          variables,
-          update: (cache, { data: { addPostMessage } }) => {
-            // read the query we want to update
-            const data = cache.readQuery({
-              query: GET_POST,
-              variables: {
-                post_id,
-              },
-            })
+      if (this.$refs.form.validate()) {
+        const { post_id, messageBody, currentUser } = this
+        const variables = {
+          post_id,
+          messageBody,
+          user_id: currentUser._id,
+        }
+        this.$apollo
+          .mutate({
+            mutation: ADD_POST_MESSAGE,
+            variables,
+            update: (cache, { data: { addPostMessage } }) => {
+              // read the query we want to update
+              const data = cache.readQuery({
+                query: GET_POST,
+                variables: {
+                  post_id,
+                },
+              })
 
-            // add the new message to the existing array
-            data.getPost.messages.unshift(addPostMessage)
-            cache.writeQuery({
-              query: GET_POST,
-              variables: {
-                post_id,
-              },
-              data,
-            })
-          },
-        })
-        .then(({ data }) => {
-          console.log(data.addPostMessage)
-          this.$refs.form.reset()
-        })
-        .then((err) => {
-          console.log(err)
-        })
+              // add the new message to the existing array
+              data.getPost.messages.unshift(addPostMessage)
+              cache.writeQuery({
+                query: GET_POST,
+                variables: {
+                  post_id,
+                },
+                data,
+              })
+            },
+          })
+          .then(({ data }) => {
+            this.$refs.form.reset()
+          })
+          .then((err) => {
+            console.log(err)
+          })
+      }
     },
     getTimeFromNow(value) {
       return dayjs(Number(value)).fromNow()
@@ -320,6 +390,36 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+
+.sharing-dialog-wrapper
+  .social-icon-wrapper
+    display flex
+    flex-direction column
+    align-items center
+    width 72px
+
+    span
+      font-size 12px
+      color #111111
+      transform translateX(-12%)
+      font-weight 700
+  i
+    font-size 48px
+    border-radius 50%
+    margin-right 8px
+    cursor pointer
+
+  .fa-line
+    color #00B900
+
+  .fa-twitter
+    color #00ACEE
+
+  .fa-facebook
+    color #3B5998
+
+  .fa-envelope
+    color #767676
 
 .operator-wrapper
   width 80%

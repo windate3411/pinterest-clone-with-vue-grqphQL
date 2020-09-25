@@ -5,6 +5,7 @@ import VueAxios from 'vue-axios'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import VueSocialSharing from 'vue-social-sharing'
 
 // import vue apollo and apollo-boost
 import ApolloClient from 'apollo-boost'
@@ -15,7 +16,7 @@ import FormAlert from './components/Shared/FormAlert.vue'
 
 Vue.use(VueAxios, axios)
 Vue.component('form-alert', FormAlert)
-
+Vue.use(VueSocialSharing)
 Vue.use(VueApollo)
 
 // setup AplloClient
