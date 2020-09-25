@@ -27,11 +27,11 @@
         </v-col>
         <v-col xs="6" md="6" offset="xs-3">
           <v-row
-            justify="space-between operator-wrapper text-center"
-            class="px-5"
+            justify="space-between"
+            class="px-5 operator-wrapper text-center"
           >
             <div class="operators">
-              <v-icon>mdi-download</v-icon>
+              <v-icon @click="downloadImage">mdi-download</v-icon>
               <v-icon class="ml-2">mdi-share</v-icon>
             </div>
             <v-icon
@@ -150,6 +150,23 @@ export default {
   methods: {
     goToPrevPage() {
       this.$router.go(-1)
+    },
+    async downloadImage(){
+      try {
+        const response = await this.axios({
+          url: this.getPost.imgUrl,
+          method: 'GET',
+          responseType:'blob'
+        })
+        const fileUrl = window.URL.createObjectURL(new Blob([response.data]))
+        const fileLink = document.createElement('a')
+        fileLink.href = fileUrl
+        fileLink.setAttribute('download','image.jpg')
+        document.body.appendChild(fileLink)
+        fileLink.click()
+      } catch (error) {
+        console.log(error)
+      }
     },
     toggleImgaeDialog() {
       if (window.innerWidth > 500) this.dialog = !this.dialog
