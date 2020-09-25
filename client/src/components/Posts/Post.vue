@@ -1,5 +1,15 @@
 <template>
   <v-container v-if="getPost" class="mt-3">
+    <!-- copy to clipboard snackbar -->
+    <v-snackbar
+      v-model="clipboardMessageShown"
+      top
+      transition="fab-transition"
+      timeout="2000"
+      color="#5cb85c"
+    >
+      <h3 class="text-center">Copy to Clipboard!</h3>
+    </v-snackbar>
     <!-- social sharing dialog -->
     <v-dialog hide-overlay width="360" v-model="socialSharingDialog">
       <v-card rounded>
@@ -57,7 +67,7 @@
                   <span>Email</span>
                 </div>
               </ShareNetwork>
-              <div class="social-icon-wrapper">
+              <div class="social-icon-wrapper" @click="copyToClipBoard">
                 <i class="fas fa-link"></i>
                 <span>Copy link</span>
               </div>
@@ -193,6 +203,7 @@ export default {
   props: ['post_id'],
   data() {
     return {
+      clipboardMessageShown: false,
       imageDialog: false,
       socialSharingDialog: false,
       messageBody: '',
@@ -217,6 +228,10 @@ export default {
   methods: {
     goToPrevPage() {
       this.$router.go(-1)
+    },
+    async copyToClipBoard() {
+      await navigator.clipboard.writeText(this.getPost.imgUrl)
+      this.clipboardMessageShown = true
     },
     async downloadImage() {
       try {
@@ -401,6 +416,7 @@ export default {
     span
       font-size 12px
       color #111111
+      cursor pointer
       transform translateX(-12%)
       font-weight 700
   i
