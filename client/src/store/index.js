@@ -8,6 +8,7 @@ import {
   USER_SIGNUP,
   ADD_POST,
   SEARCH_POSTS,
+  GET_USER_POSTS,
 } from '../queries.js'
 import router from '../router'
 Vue.use(Vuex)
@@ -15,6 +16,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     posts: [],
+    userPosts: [],
     loading: false,
     currentUser: null,
     error: null,
@@ -24,6 +26,9 @@ export default new Vuex.Store({
   mutations: {
     SET_POSTS: (state, payload) => {
       state.posts = payload
+    },
+    SET_USER_POSTS: (state, payload) => {
+      state.userPosts = payload
     },
     SET_LOADING: (state, payload) => {
       state.loading = payload
@@ -59,6 +64,22 @@ export default new Vuex.Store({
         })
         .then(({ data }) => {
           commit('SET_POSTS', data.getPosts)
+          commit('SET_LOADING', false)
+        })
+        .catch((err) => {
+          console.log(err)
+          commit('SET_LOADING', false)
+        })
+    },
+    getUserPosts: ({ commit }, payload) => {
+      commit('SET_LOADING', true)
+      apolloClient
+        .query({
+          query: GET_USER_POSTS,
+          variables: payload,
+        })
+        .then(({ data }) => {
+          commit('SET_USER_POSTS', data.getUserPosts)
           commit('SET_LOADING', false)
         })
         .catch((err) => {
@@ -201,6 +222,7 @@ export default new Vuex.Store({
   modules: {},
   getters: {
     posts: (state) => state.posts.slice(0, 5),
+    userPosts: (state) => state.userPosts,
     loading: (state) => state.loading,
     currentUser: (state) => state.currentUser,
     error: (state) => state.error,

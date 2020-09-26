@@ -11,6 +11,20 @@ export const GET_POSTS = gql`
     }
   }
 `
+export const GET_USER_POSTS = gql`
+  query($user_id: ID!) {
+    getUserPosts(user_id: $user_id) {
+      _id
+      title
+      description
+      imgUrl
+      categories
+      createdDate
+      likes
+    }
+  }
+`
+
 export const GET_POST = gql`
   query($post_id: ID!) {
     getPost(post_id: $post_id) {

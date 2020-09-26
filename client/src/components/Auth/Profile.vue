@@ -8,7 +8,7 @@
 <script>
 import UserProfileCard from '../Shared/ProfileCard'
 import PostCard from '../Shared/PostCard'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'Profile',
@@ -17,7 +17,19 @@ export default {
     PostCard
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'userPosts'])
+  },
+  methods: {
+    ...mapActions(['getUserPosts']),
+    handleGetUserPosts() {
+      console.log(this.currentUser._id)
+      this.getUserPosts({
+        user_id:this.currentUser._id
+      })
+    }
+  },
+  created() {
+    this.handleGetUserPosts()
   },
 }
 </script>
