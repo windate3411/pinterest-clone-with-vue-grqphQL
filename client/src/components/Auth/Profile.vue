@@ -1,11 +1,16 @@
 <template>
   <v-container>
-    <h1>Profile</h1>
+    <UserProfileCard />
   </v-container>
 </template>
 
 <script>
+import UserProfileCard from '../Shared/ProfileCard'
+
 export default {
   name: 'Profile',
+  components: {
+    UserProfileCard
+  },
 }
 </script>
