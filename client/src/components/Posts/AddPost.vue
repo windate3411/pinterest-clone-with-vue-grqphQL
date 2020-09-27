@@ -1,87 +1,102 @@
 <template>
   <v-container class="mt-5 text-center">
     <v-row>
-      <v-col xs="12" sm="6" offset="sm-3">
-        <h1 class="primary--text">Add Post</h1>
-      </v-col>
-    </v-row>
+      <v-col xs="6" offset="1">
+        <v-card width="880px" hover class="rounded-lg">
+          <v-row>
+            <v-col cols="6" align-self="center">
+              <transition name="fade">
+                <div class="image-preview ml-2" v-if="!imgUrl">
+                  <div class="border"></div>
+                </div>
+                <v-img
+                  :src="imgUrl"
+                  contain
+                  class="rounded-lg ml-2"
+                  v-else
+                ></v-img>
+              </transition>
+            </v-col>
+            <v-col cols="6">
+              <div class="form-wrapper">
+                <v-form v-model="isFormValid" lazy-validation ref="form">
+                  <!-- title input -->
+                  <v-row>
+                    <v-col xs="12">
+                      <v-text-field
+                        label="Add your title"
+                        name="title"
+                        :rules="titleRules"
+                        prepend-icon="mdi-post"
+                        type="text"
+                        v-model="title"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
 
-    <!-- add Post form -->
-    <v-row>
-      <v-col xs="12" sm="6" offset="sm-3">
-        <v-card class="elevation-12">
-          <v-toolbar color="primary" dark flat>
-            <v-toolbar-title class="text-center">It's time to post something!</v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-form v-model="isFormValid" lazy-validation ref="form">
-              <!-- title input -->
-              <v-row>
-                <v-col xs="12">
-                  <v-text-field
-                    label="Post title"
-                    name="title"
-                    :rules="titleRules"
-                    prepend-icon="mdi-post"
-                    type="text"
-                    v-model="title"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+                  <!-- imgUrl input -->
+                  <v-row>
+                    <v-col xs="12">
+                      <v-text-field
+                        label="Image Url"
+                        name="imgUrl"
+                        :rules="imgUrlRules"
+                        prepend-icon="mdi-image"
+                        type="text"
+                        v-model="imgUrl"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
 
-              <!-- imgUrl input -->
-              <v-row>
-                <v-col xs="12">
-                  <v-text-field
-                    label="Image Url"
-                    name="imgUrl"
-                    :rules="imgUrlRules"
-                    prepend-icon="mdi-image"
-                    type="text"
-                    v-model="imgUrl"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+                  <!-- categories input -->
+                  <v-row>
+                    <v-col xs="12">
+                      <v-select
+                        v-model="categories"
+                        multiple
+                        label="Categories"
+                        chips
+                        clearable
+                        deletable-chips
+                        :rules="categoriesRules"
+                        prepend-icon="mdi-form-select"
+                        :items="[
+                          'Art',
+                          'Education',
+                          'Travel',
+                          'Photography',
+                          'Technology',
+                        ]"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
 
-              <!-- Image preview -->
-              <v-row v-if="imgUrl">
-                <v-col xs="12">
-                  <img :src="imgUrl" height="300px" />
-                </v-col>
-              </v-row>
+                  <v-row>
+                    <v-col xs="12" class="d-flex align-center">
+                      <v-avatar class="mr-1" size="32">
+                        <v-img :src="currentUser.avatar"></v-img>
+                      </v-avatar>
+                      <h4>{{ currentUser.username }}</h4>
+                    </v-col>
+                  </v-row>
 
-              <!-- categories input -->
-              <v-row>
-                <v-col xs="12">
-                  <v-select
-                    v-model="categories"
-                    multiple
-                    label="Categories"
-                    chips
-                    clearable
-                    deletable-chips
-                    :rules="categoriesRules"
-                    prepend-icon="mdi-form-select"
-                    :items="['Art','Education','Travel','Photography','Technology']"
-                  ></v-select>
-                </v-col>
-              </v-row>
-
-              <!-- description input -->
-              <v-row>
-                <v-col xs="12">
-                  <v-textarea
-                    label="Description"
-                    name="description"
-                    :rules="descriptionRules"
-                    prepend-icon="mdi-pencil"
-                    type="text"
-                    v-model="description"
-                  ></v-textarea>
-                </v-col>
-              </v-row>
-            </v-form>
-          </v-card-text>
+                  <!-- description input -->
+                  <v-row>
+                    <v-col xs="12">
+                      <v-textarea
+                        label="Tell us what your post is about"
+                        name="description"
+                        :rules="descriptionRules"
+                        prepend-icon="mdi-pencil"
+                        type="text"
+                        v-model="description"
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </div>
+            </v-col>
+          </v-row>
           <v-card-actions>
             <v-row>
               <v-col xs="12">
@@ -147,3 +162,33 @@ export default {
   },
 };
 </script>
+
+
+<style lang="stylus" scoped>
+
+.image-preview
+  background-color #efefef
+  height 500px
+  position relative
+
+  .border
+    border 3px dashed #767676
+    height 90%
+    width 90%
+    position absolute
+    left 50%
+    top 50%
+    transform translate(-50%,-50%)
+
+.fade-enter-active, .fade-leave-active
+  transition all 0.25s
+
+
+.fade-enter-active 
+  transition-delay 0.25s
+
+
+.fade-enter, .fade-leave-active 
+  opacity 0
+
+</style>
