@@ -18,7 +18,7 @@
     <PostCard :posts="renderPosts" />
 
     <!-- observer -->
-    <div class="d-flex justify-center">
+    <div class="d-flex justify-center mt-5">
       <v-progress-circular
         indeterminate
         color="primary"

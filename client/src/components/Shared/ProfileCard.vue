@@ -20,7 +20,7 @@
     <!-- operations -->
     <v-row justify="end">
       <v-col cols="1">
-        <div class="icon-wrapper">
+        <div class="icon-wrapper" @click="goToAddPost">
           <i class="fas fa-plus"></i>
         </div>
       </v-col>
@@ -35,6 +35,11 @@ import dayjs from 'dayjs'
 export default {
   name: 'ProfileCard',
   props:['user'],
+  methods: {
+    goToAddPost() {
+      this.$router.push('/post/add')
+    }
+  },
   computed: {
     userJoinDate() {
       if (!this.currentUser) return
