@@ -2,11 +2,9 @@
   <v-app>
     <Navbar class="demo" />
     <v-main>
-      <v-container class="mt-4">
-        <transition name="fade">
-          <router-view></router-view>
-        </transition>
-      </v-container>
+      <transition name="fade">
+        <router-view></router-view>
+      </transition>
     </v-main>
   </v-app>
 </template>
