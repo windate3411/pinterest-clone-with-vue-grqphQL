@@ -1,188 +1,203 @@
 <template>
-  <v-container v-if="getPost" class="mt-3">
-    <!-- copy to clipboard snackbar -->
-    <v-snackbar
-      v-model="clipboardMessageShown"
-      top
-      transition="fab-transition"
-      timeout="2000"
-      color="#5cb85c"
+  <div class="wrapper d-flex justify-center">
+    <v-container v-if="!getPost">
+      <Spinner />
+    </v-container>
+    <div
+      v-else
+      :style="{
+        width: cardWidth,
+      }"
+      v-resize="onResize"
     >
-      <h3 class="text-center">Copy to Clipboard!</h3>
-    </v-snackbar>
-    <!-- social sharing dialog -->
-    <v-dialog hide-overlay width="360" v-model="socialSharingDialog">
-      <v-card rounded>
-        <v-container class="sharing-dialog-wrapper">
-          <v-row justify="center">
-            <v-card-title class="text-center">Share this post</v-card-title>
-          </v-row>
+      <v-container class="mt-5">
+        <!-- copy to clipboard snackbar -->
+        <v-snackbar
+          v-model="clipboardMessageShown"
+          top
+          transition="fab-transition"
+          timeout="2000"
+          color="#5cb85c"
+        >
+          <h3 class="text-center">Copy to Clipboard!</h3>
+        </v-snackbar>
+        <!-- social sharing dialog -->
+        <v-dialog hide-overlay width="360" v-model="socialSharingDialog">
+          <v-card rounded>
+            <v-container class="sharing-dialog-wrapper">
+              <v-row justify="center">
+                <v-card-title class="text-center">Share this post</v-card-title>
+              </v-row>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-center">
+                  <ShareNetwork
+                    network="twitter"
+                    :url="getPost.imgUrl"
+                    :title="getPost.title"
+                    :description="getPost.description"
+                    :hashtags="getPost.categories.join(',')"
+                  >
+                    <div class="social-icon-wrapper">
+                      <i class="fab fa-twitter"></i>
+                      <span>Twitter</span>
+                    </div>
+                  </ShareNetwork>
+                  <ShareNetwork
+                    network="line"
+                    :url="getPost.imgUrl"
+                    :title="getPost.title"
+                    :description="getPost.description"
+                  >
+                    <div class="social-icon-wrapper">
+                      <i class="fab fa-line"></i>
+                      <span>Line</span>
+                    </div>
+                  </ShareNetwork>
+                  <ShareNetwork
+                    network="facebook"
+                    :url="getPost.imgUrl"
+                    :title="getPost.title"
+                    :description="getPost.description"
+                    :quote="getPost.description"
+                    :hashtags="getPost.categories.join(',')"
+                  >
+                    <div class="social-icon-wrapper">
+                      <i class="fab fa-facebook"></i>
+                      <span>Facebook</span>
+                    </div>
+                  </ShareNetwork>
+                  <ShareNetwork
+                    network="email"
+                    :url="getPost.imgUrl"
+                    :title="getPost.title"
+                    :description="getPost.description"
+                    class="mr-1"
+                  >
+                    <div class="social-icon-wrapper">
+                      <i class="far fa-envelope"></i>
+                      <span>Email</span>
+                    </div>
+                  </ShareNetwork>
+                  <div class="social-icon-wrapper" @click="copyToClipBoard">
+                    <i class="fas fa-link"></i>
+                    <span>Copy link</span>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-dialog>
+        <v-card class="mt-5 rounded-xl">
           <v-row>
-            <v-col cols="12" class="d-flex justify-center">
-              <ShareNetwork
-                network="twitter"
-                :url="getPost.imgUrl"
-                :title="getPost.title"
-                :description="getPost.description"
-                :hashtags="getPost.categories.join(',')"
+            <v-col xs="6" md="6" offset="xs-3">
+              <!-- img tooltip -->
+              <v-tooltip bottom>
+                <span>Click to enlarge the image</span>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-img
+                    :src="getPost.imgUrl"
+                    v-bind="attrs"
+                    v-on="on"
+                    height="100%"
+                    @click="toggleImgaeDialog"
+                    class="rounded-xl mx-3"
+                  ></v-img>
+                </template>
+              </v-tooltip>
+
+              <!-- img dialog -->
+              <v-dialog v-model="imageDialog">
+                <v-card>
+                  <img :src="getPost.imgUrl" />
+                  <!-- <v-img :src="getPost.imgUrl" height="80vh" contain></v-img> -->
+                </v-card>
+              </v-dialog>
+            </v-col>
+            <v-col xs="6" md="6" offset="xs-3">
+              <v-row
+                justify="space-between"
+                class="px-5 operator-wrapper text-center"
               >
-                <div class="social-icon-wrapper">
-                  <i class="fab fa-twitter"></i>
-                  <span>Twitter</span>
+                <div class="operators">
+                  <v-icon @click="downloadImage">mdi-download</v-icon>
+                  <v-icon class="ml-2" @click="toggleSharingDialog"
+                    >mdi-share</v-icon
+                  >
                 </div>
-              </ShareNetwork>
-              <ShareNetwork
-                network="line"
-                :url="getPost.imgUrl"
-                :title="getPost.title"
-                :description="getPost.description"
-              >
-                <div class="social-icon-wrapper">
-                  <i class="fab fa-line"></i>
-                  <span>Line</span>
+                <v-icon
+                  :color="checkIfLikedPost(post_id) ? 'red' : 'grey'"
+                  v-if="currentUser"
+                  class="animate__animated animate__heartBeat animate__repeat-3"
+                  @click="handleLikeToggle"
+                  >mdi-heart</v-icon
+                >
+              </v-row>
+              <div class="flex-container">
+                <h1 class="text-center">{{ getPost.title }}</h1>
+                <p>{{ getPost.description }}</p>
+                <h2 class="comments-section-title">
+                  <span>{{ getPost.messages.length }} </span>Comments
+                </h2>
+                <!-- display post messages  -->
+                <div
+                  class="message-wrapper"
+                  v-for="message in getPost.messages"
+                  :key="message.id"
+                >
+                  <div class="message-user-image">
+                    <v-avatar size="36">
+                      <v-img :src="message.messageUser.avatar"></v-img>
+                    </v-avatar>
+                  </div>
+                  <div class="message-content-box">
+                    <div class="message-info">
+                      <h2 class="message-user-name">
+                        {{ message.messageUser.username }}
+                      </h2>
+                      <p class="message-time">
+                        {{ getTimeFromNow(message.messageDate) }}
+                      </p>
+                    </div>
+                    <div class="message-content">
+                      <span>
+                        {{ message.messageBody }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </ShareNetwork>
-              <ShareNetwork
-                network="facebook"
-                :url="getPost.imgUrl"
-                :title="getPost.title"
-                :description="getPost.description"
-                :quote="getPost.description"
-                :hashtags="getPost.categories.join(',')"
-              >
-                <div class="social-icon-wrapper">
-                  <i class="fab fa-facebook"></i>
-                  <span>Facebook</span>
+                <div
+                  class="message-input-wrapper d-flex align-center mt-2"
+                  v-if="currentUser"
+                >
+                  <v-form
+                    @submit.prevent="handleAddPosrMessage"
+                    ref="form"
+                    lazy-validation
+                    v-model="isFormValidated"
+                  >
+                    <v-text-field
+                      clearable
+                      :append-outer-icon="messageBody && 'mdi-send'"
+                      label="Leave a comment..."
+                      @click:append-outer="handleAddPosrMessage"
+                      v-model="messageBody"
+                      maxlength="60"
+                      counter
+                      rounded
+                      height="48"
+                      outlined
+                      prepend-icon="mdi-message-outline"
+                      full-width
+                    ></v-text-field>
+                  </v-form>
                 </div>
-              </ShareNetwork>
-              <ShareNetwork
-                network="email"
-                :url="getPost.imgUrl"
-                :title="getPost.title"
-                :description="getPost.description"
-                class="mr-1"
-              >
-                <div class="social-icon-wrapper">
-                  <i class="far fa-envelope"></i>
-                  <span>Email</span>
-                </div>
-              </ShareNetwork>
-              <div class="social-icon-wrapper" @click="copyToClipBoard">
-                <i class="fas fa-link"></i>
-                <span>Copy link</span>
               </div>
             </v-col>
           </v-row>
-        </v-container>
-      </v-card>
-    </v-dialog>
-    <v-card class="mt-5 rounded-xl">
-      <v-row>
-        <v-col xs="6" md="6" offset="xs-3">
-          <!-- img tooltip -->
-          <v-tooltip bottom>
-            <span>Click to enlarge the image</span>
-            <template v-slot:activator="{ on, attrs }">
-              <v-img
-                :src="getPost.imgUrl"
-                v-bind="attrs"
-                v-on="on"
-                height="100%"
-                @click="toggleImgaeDialog"
-                class="rounded-xl mx-3"
-              ></v-img>
-            </template>
-          </v-tooltip>
-
-          <!-- img dialog -->
-          <v-dialog v-model="imageDialog">
-            <v-card>
-              <v-img :src="getPost.imgUrl" height="80vh"></v-img>
-            </v-card>
-          </v-dialog>
-        </v-col>
-        <v-col xs="6" md="6" offset="xs-3">
-          <v-row
-            justify="space-between"
-            class="px-5 operator-wrapper text-center"
-          >
-            <div class="operators">
-              <v-icon @click="downloadImage">mdi-download</v-icon>
-              <v-icon class="ml-2" @click="toggleSharingDialog"
-                >mdi-share</v-icon
-              >
-            </div>
-            <v-icon
-              :color="checkIfLikedPost(post_id) ? 'red' : 'grey'"
-              v-if="currentUser"
-              @click="handleLikeToggle"
-              >mdi-heart</v-icon
-            >
-          </v-row>
-          <div class="flex-container">
-            <h1 class="text-center">{{ getPost.title }}</h1>
-            <p>{{ getPost.description }}</p>
-            <h2 class="comments-section-title">
-              <span>{{ getPost.messages.length }} </span>Comments
-            </h2>
-            <!-- display post messages  -->
-            <div
-              class="message-wrapper"
-              v-for="message in getPost.messages"
-              :key="message.id"
-            >
-              <div class="message-user-image">
-                <v-avatar size="36">
-                  <v-img :src="message.messageUser.avatar"></v-img>
-                </v-avatar>
-              </div>
-              <div class="message-content-box">
-                <div class="message-info">
-                  <h2 class="message-user-name">
-                    {{ message.messageUser.username }}
-                  </h2>
-                  <p class="message-time">
-                    {{ getTimeFromNow(message.messageDate) }}
-                  </p>
-                </div>
-                <div class="message-content">
-                  <span>
-                    {{ message.messageBody }}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div
-              class="message-input-wrapper d-flex align-center mt-2"
-              v-if="currentUser"
-            >
-              <v-form
-                @submit.prevent="handleAddPosrMessage"
-                ref="form"
-                lazy-validation
-                v-model="isFormValidated"
-              >
-                <v-text-field
-                  clearable
-                  :append-outer-icon="messageBody && 'mdi-send'"
-                  label="Leave a comment..."
-                  @click:append-outer="handleAddPosrMessage"
-                  v-model="messageBody"
-                  maxlength="60"
-                  counter
-                  rounded
-                  height="48"
-                  outlined
-                  prepend-icon="mdi-message-outline"
-                  full-width
-                ></v-text-field>
-              </v-form>
-            </div>
-          </div>
-        </v-col>
-      </v-row>
-    </v-card>
-  </v-container>
+        </v-card>
+      </v-container>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -193,6 +208,7 @@ import {
   UNLIKE_POST,
 } from '../../queries'
 import { mapGetters, mapActions } from 'vuex'
+import Spinner from '../Shared/Spinner'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
@@ -201,6 +217,9 @@ dayjs.extend(relativeTime)
 export default {
   name: 'Post',
   props: ['post_id'],
+  components: {
+    Spinner
+  },
   data() {
     return {
       clipboardMessageShown: false,
@@ -209,6 +228,7 @@ export default {
       messageBody: '',
       hasLiked: false,
       isFormValidated: true,
+      screenWidth: '',
       addPostMessageRules: [
         (value) =>
           value.length < 60 || 'Message must be less than 60 characters',
@@ -387,24 +407,27 @@ export default {
     getTimeFromNow(value) {
       return dayjs(Number(value)).fromNow()
     },
+    onResize() {
+      this.screenWidth = window.innerWidth
+    }
   },
   computed: {
     ...mapGetters(['currentUser', 'userFavorites']),
-  },
-  filters: {
-    timeFormat: function(value) {
-      return 'Danny Wang'
-    },
-    capitalize: function(value) {
-      if (!value) return ''
-      value = value.toString()
-      return value.charAt(0).toUpperCase() + value.slice(1)
-    },
+    cardWidth() {
+      if (this.screenWidth < 960) return '450px'
+      return  '100%'
+    }
   },
 }
 </script>
 
 <style lang="stylus" scoped>
+
+img
+  object-fit contain
+  height 80vh
+  width 100%
+  overflow hidden
 
 .sharing-dialog-wrapper
   .social-icon-wrapper
