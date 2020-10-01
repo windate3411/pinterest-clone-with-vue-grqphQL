@@ -119,7 +119,7 @@
                 class="px-5 operator-wrapper text-center"
               >
                 <div class="operators">
-                  <v-icon @click="downloadImage">mdi-download</v-icon>
+                  <v-icon @click="hanldeImageDownload">mdi-download</v-icon>
                   <v-icon class="ml-2" @click="toggleSharingDialog"
                     >mdi-share</v-icon
                   >
@@ -211,6 +211,7 @@ import { mapGetters, mapActions } from 'vuex'
 import Spinner from '../Shared/Spinner'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { downloadImage } from '@/utils'
 
 dayjs.extend(relativeTime)
 
@@ -254,22 +255,8 @@ export default {
       await navigator.clipboard.writeText(this.getPost.imgUrl)
       this.clipboardMessageShown = true
     },
-    async downloadImage() {
-      try {
-        const response = await this.axios({
-          url: this.getPost.imgUrl,
-          method: 'GET',
-          responseType: 'blob',
-        })
-        const fileUrl = window.URL.createObjectURL(new Blob([response.data]))
-        const fileLink = document.createElement('a')
-        fileLink.href = fileUrl
-        fileLink.setAttribute('download', 'image.jpg')
-        document.body.appendChild(fileLink)
-        fileLink.click()
-      } catch (error) {
-        console.log(error)
-      }
+    hanldeImageDownload() {
+      downloadImage(this.getPost.imgUrl)
     },
     toggleImgaeDialog() {
       if (window.innerWidth > 500) this.imageDialog = !this.imageDialog
