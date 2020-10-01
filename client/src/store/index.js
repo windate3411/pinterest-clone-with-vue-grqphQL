@@ -9,6 +9,9 @@ import {
   ADD_POST,
   SEARCH_POSTS,
   GET_USER_POSTS,
+  LIKE_POST,
+  UNLIKE_POST,
+  GET_POST,
 } from '../queries.js'
 import router from '../router'
 Vue.use(Vuex)
@@ -141,6 +144,62 @@ export default new Vuex.Store({
           console.log(err)
           commit('SET_LOADING', false)
         })
+    },
+    likePost: ({ commit, state }, payload) => {
+      commit('SET_LOADING', true)
+      apolloClient
+        .mutate({
+          mutation: LIKE_POST,
+          variables: payload,
+          update: (cache, { data: { likePost } }) => {
+            const data = cache.readQuery({
+              query: GET_POST,
+              variables: payload,
+            })
+            data.getPost.likes += 1
+            cache.writeQuery({
+              query: GET_POST,
+              variables: payload,
+              data,
+            })
+          },
+        })
+        .then(({ data }) => {
+          const updatedUser = {
+            ...state.currentUser,
+            favorites: data.likePost.favorites,
+          }
+          commit('SET_CURRENT_USER', updatedUser)
+        })
+        .catch((err) => console.log(err))
+    },
+    unLikePost: ({ commit, state }, payload) => {
+      commit('SET_LOADING', true)
+      apolloClient
+        .mutate({
+          mutation: UNLIKE_POST,
+          variables: payload,
+          update: (cache, { data: { unLikePost } }) => {
+            const data = cache.readQuery({
+              query: GET_POST,
+              variables: payload,
+            })
+            data.getPost.likes -= 1
+            cache.writeQuery({
+              query: GET_POST,
+              variables: payload,
+              data,
+            })
+          },
+        })
+        .then(({ data }) => {
+          const updatedUser = {
+            ...state.currentUser,
+            favorites: data.unLikePost.favorites,
+          }
+          commit('SET_CURRENT_USER', updatedUser)
+        })
+        .catch((err) => console.log(err))
     },
     signinUser: ({ commit }, payload) => {
       // reset error

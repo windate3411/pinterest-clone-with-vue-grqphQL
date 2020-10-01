@@ -246,6 +246,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['likePost','unLikePost']),
     goToPrevPage() {
       this.$router.go(-1)
     },
@@ -293,76 +294,16 @@ export default {
       return this.hasLiked ? this.handleUnLikePost() : this.handleLikePost()
     },
     handleLikePost() {
-      const { post_id, messageBody, currentUser } = this
-      const variables = {
-        post_id,
-        username: currentUser.username,
-      }
-      this.$apollo
-        .mutate({
-          mutation: LIKE_POST,
-          variables,
-          update: (cache, { data: { likePost } }) => {
-            const data = cache.readQuery({
-              query: GET_POST,
-              variables: {
-                post_id: this.post_id,
-              },
-            })
-            data.getPost.likes += 1
-            cache.writeQuery({
-              query: GET_POST,
-              variables: {
-                post_id: this.post_id,
-              },
-              data,
-            })
-          },
-        })
-        .then(({ data }) => {
-          const updatedUser = {
-            ...currentUser,
-            favorites: data.likePost.favorites,
-          }
-          this.$store.commit('SET_CURRENT_USER', updatedUser)
-        })
-        .catch((err) => console.log(err))
+      this.likePost({
+        post_id: this.post_id,
+        username: this.currentUser.username
+      })
     },
     handleUnLikePost() {
-      const { post_id, messageBody, currentUser } = this
-      const variables = {
-        post_id,
-        username: currentUser.username,
-      }
-      this.$apollo
-        .mutate({
-          mutation: UNLIKE_POST,
-          variables,
-          update: (cache, { data: { unLikePost } }) => {
-            const data = cache.readQuery({
-              query: GET_POST,
-              variables: {
-                post_id: this.post_id,
-              },
-            })
-            data.getPost.likes -= 1
-            cache.writeQuery({
-              query: GET_POST,
-              variables: {
-                post_id: this.post_id,
-              },
-              data,
-            })
-          },
-        })
-        .then(({ data }) => {
-          const updatedUser = {
-            ...currentUser,
-            favorites: data.unLikePost.favorites,
-          }
-          this.$store.commit('SET_CURRENT_USER', updatedUser)
-        })
-        .catch((err) => console.log(err))
+      this.unLikePost({
+        post_id: this.post_id,
+        username: this.currentUser.username
+      })
     },
     handleAddPosrMessage() {
       if (this.$refs.form.validate()) {
