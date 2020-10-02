@@ -15,6 +15,7 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
+    redirect: Posts,
   },
   {
     path: '/posts',

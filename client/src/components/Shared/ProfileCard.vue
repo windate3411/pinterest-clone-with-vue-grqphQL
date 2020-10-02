@@ -42,8 +42,8 @@ export default {
   },
   computed: {
     userJoinDate() {
-      if (!this.currentUser) return
-      return dayjs(Number(this.currentUser.joinDate)).format('YYYY-MM-DD')
+      if (!this.user) return
+      return dayjs(Number(this.user.joinDate)).format('YYYY-MM-DD')
     }
   }
 }
