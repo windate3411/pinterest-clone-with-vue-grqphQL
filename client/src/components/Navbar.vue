@@ -6,16 +6,25 @@
       <span v-if="currentUser">You've successfully signed in!</span>
       <span v-else>You've successfully logged out!</span>
       <template v-slot:action="{ attrs }">
-        <v-btn dark text v-bind="attrs" @click="authSnackbarShown = false">X</v-btn>
+        <v-btn dark text v-bind="attrs" @click="authSnackbarShown = false"
+          >X</v-btn
+        >
       </template>
     </v-snackbar>
 
     <!-- auth error snackbar -->
-    <v-snackbar v-model="authErrorSnackbarShown" :timeout="timeout" color="error" v-if="authError">
+    <v-snackbar
+      v-model="authErrorSnackbarShown"
+      :timeout="timeout"
+      color="error"
+      v-if="authError"
+    >
       <v-icon left>mdi-cancel</v-icon>
       <span>{{ authError.message }}</span>
       <template v-slot:action="{ attrs }">
-        <v-btn dark text v-bind="attrs" @click="authErrorSnackbarShown = false">X</v-btn>
+        <v-btn dark text v-bind="attrs" @click="authErrorSnackbarShown = false"
+          >X</v-btn
+        >
       </template>
     </v-snackbar>
 
@@ -33,7 +42,7 @@
     <v-navigation-drawer app temporary fixed v-model="sidebarShown">
       <v-app-bar color="accent" dense text>
         <v-app-bar-nav-icon color="white"></v-app-bar-nav-icon>
-        <router-link to="/" tag="span" style="cursor:pointer">
+        <router-link to="/" tag="span" style="cursor: pointer">
           <h1 class="title white--text text--darken-4 pl-5">Vinterest</h1>
         </router-link>
       </v-app-bar>
@@ -41,7 +50,11 @@
       <!-- side-bar-links -->
       <v-list rounded class="mt-5">
         <v-list-item-group v-model="sideBarSeletedItem" color="primary">
-          <v-list-item v-for="(item, i) in sidebarItems" :key="i" :to="item.link">
+          <v-list-item
+            v-for="(item, i) in sidebarItems"
+            :key="i"
+            :to="item.link"
+          >
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
@@ -49,7 +62,11 @@
               <v-list-item-title v-text="item.title"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item class="mt-2" v-if="!currentUser" @click.stop="loginDialog = true">
+          <v-list-item
+            class="mt-2"
+            v-if="!currentUser"
+            @click.stop="loginDialog = true"
+          >
             <v-list-item-icon>
               <v-icon v-text="'mdi-login'"></v-icon>
             </v-list-item-icon>
@@ -57,7 +74,11 @@
               <v-list-item-title v-text="'Log In'"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item class="mt-2" v-if="!currentUser" @click.stop="signupDialog = true">
+          <v-list-item
+            class="mt-2"
+            v-if="!currentUser"
+            @click.stop="signupDialog = true"
+          >
             <v-list-item-icon>
               <v-icon v-text="'mdi-lead-pencil'"></v-icon>
             </v-list-item-icon>
@@ -80,12 +101,24 @@
 
     <!-- nav -->
     <v-app-bar color="white" elevation="3" fixed>
-      <v-app-bar-nav-icon @click="sidebarShown = !sidebarShown"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        @click="sidebarShown = !sidebarShown"
+      ></v-app-bar-nav-icon>
 
       <v-toolbar-title>
         <div class="logo">
-          <router-link to="/" tag="span" style="cursor:pointer" color="primary">
-            <v-img contain :src="require('../assets/images/logo.jpg')" height="100%" width="100px"></v-img>
+          <router-link
+            to="/"
+            tag="span"
+            style="cursor: pointer"
+            color="primary"
+          >
+            <v-img
+              contain
+              :src="require('../assets/images/logo.jpg')"
+              height="100%"
+              width="100px"
+            ></v-img>
           </router-link>
         </div>
         <!-- <router-link to="/" tag="span" style="cursor:pointer" color="primary">Vinterest</router-link> -->
@@ -119,9 +152,7 @@
             <v-list-item-title>
               {{ post.title }}
               <span class="font-weight-thin ml-2">
-                {{
-                formattedDescription(post.description)
-                }}
+                {{ formattedDescription(post.description) }}
               </span>
             </v-list-item-title>
           </v-list-item>
@@ -132,35 +163,11 @@
         <v-icon class="hidden-sm-only" left>mdi-account-box-outline</v-icon>
         <v-badge right color="blue darken-2" :class="{ bounce: badgeAnimated }">
           <span slot="badge" v-if="userFavorites.length">
-            {{
-            userFavorites.length
-            }}
+            {{ userFavorites.length }}
           </span>
           Profile
         </v-badge>
       </v-btn>
-      <!-- right-side-menu -->
-      <v-menu offset-y transition="slide-y-transition">
-        <template v-slot:activator="{ on }">
-          <v-btn text v-on="on" color="gray" class="hidden-sm-and-down">
-            <v-icon left>mdi-chevron-down</v-icon>
-            <span>Menu</span>
-          </v-btn>
-        </template>
-        <v-list>
-          <v-list-item v-for="item in navItems" :key="item.id" :to="item.link">
-            <v-list-item-title>
-              <v-icon left>{{ item.icon }}</v-icon>
-              <span>{{ item.title }}</span>
-            </v-list-item-title>
-          </v-list-item>
-          <v-divider></v-divider>
-          <v-list-item v-if="currentUser" @click="signoutUser">
-            <v-icon left class="hidden-sm-and-down">mdi-exit-to-app</v-icon>
-            <span>Sign Out</span>
-          </v-list-item>
-        </v-list>
-      </v-menu>
     </v-app-bar>
   </div>
 </template>
@@ -215,23 +222,6 @@ export default {
       'userFavorites',
       'searchResults',
     ]),
-    navItems() {
-      let items = [
-        { icon: 'mdi-chat-plus-outline', title: 'Posts', link: '/posts' },
-      ]
-
-      if (this.currentUser) {
-        items = [
-          { icon: 'mdi-chat-plus-outline', title: 'Posts', link: '/posts' },
-          {
-            icon: 'mdi-pencil-plus-outline',
-            title: 'Create Post',
-            link: '/post/add',
-          },
-        ]
-      }
-      return items
-    },
     sidebarItems() {
       let items = [
         { icon: 'mdi-chat-plus-outline', title: 'Posts', link: '/posts' }
