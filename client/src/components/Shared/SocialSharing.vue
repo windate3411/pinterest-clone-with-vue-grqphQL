@@ -1,5 +1,10 @@
 <template>
-  <v-dialog hide-overlay width="360" v-model="socialSharingDialog">
+  <v-dialog
+    hide-overlay
+    width="360"
+    :value="sharingModal"
+    v-click-outside="toggleSharingDialog"
+  >
     <v-card rounded>
       <v-container class="sharing-dialog-wrapper">
         <v-row justify="center">
@@ -67,11 +72,17 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
-  props: ['socialSharingDialog', 'post'],
+  props: ['sharingModal', 'post'],
   methods: {
+    ...mapActions(['toggleSharingModal']),
     handleCopy() {
       this.$emit('handleCopy')
+    },
+    toggleSharingDialog() {
+      this.toggleSharingModal()
     }
   },
 }

@@ -21,72 +21,12 @@
         >
           <h3 class="text-center">Copy to Clipboard!</h3>
         </v-snackbar>
-        <!-- social sharing dialog -->
-        <v-dialog hide-overlay width="360" v-model="socialSharingDialog">
-          <v-card rounded>
-            <v-container class="sharing-dialog-wrapper">
-              <v-row justify="center">
-                <v-card-title class="text-center">Share this post</v-card-title>
-              </v-row>
-              <v-row>
-                <v-col cols="12" class="d-flex justify-center">
-                  <ShareNetwork
-                    network="twitter"
-                    :url="getPost.imgUrl"
-                    :title="getPost.title"
-                    :description="getPost.description"
-                    :hashtags="getPost.categories.join(',')"
-                  >
-                    <div class="social-icon-wrapper">
-                      <i class="fab fa-twitter"></i>
-                      <span>Twitter</span>
-                    </div>
-                  </ShareNetwork>
-                  <ShareNetwork
-                    network="line"
-                    :url="getPost.imgUrl"
-                    :title="getPost.title"
-                    :description="getPost.description"
-                  >
-                    <div class="social-icon-wrapper">
-                      <i class="fab fa-line"></i>
-                      <span>Line</span>
-                    </div>
-                  </ShareNetwork>
-                  <ShareNetwork
-                    network="facebook"
-                    :url="getPost.imgUrl"
-                    :title="getPost.title"
-                    :description="getPost.description"
-                    :quote="getPost.description"
-                    :hashtags="getPost.categories.join(',')"
-                  >
-                    <div class="social-icon-wrapper">
-                      <i class="fab fa-facebook"></i>
-                      <span>Facebook</span>
-                    </div>
-                  </ShareNetwork>
-                  <ShareNetwork
-                    network="email"
-                    :url="getPost.imgUrl"
-                    :title="getPost.title"
-                    :description="getPost.description"
-                    class="mr-1"
-                  >
-                    <div class="social-icon-wrapper">
-                      <i class="far fa-envelope"></i>
-                      <span>Email</span>
-                    </div>
-                  </ShareNetwork>
-                  <div class="social-icon-wrapper" @click="copyToClipBoard">
-                    <i class="fas fa-link"></i>
-                    <span>Copy link</span>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-dialog>
+        <SocialSharing
+          v-if="sharingModal"
+          :post="getPost"
+          :sharingModal="sharingModal"
+          @handleCopy="copyToClipBoard"
+        />
         <v-card class="mt-5 rounded-xl">
           <v-row>
             <v-col xs="6" md="6" offset="xs-3">
@@ -120,7 +60,7 @@
               >
                 <div class="operators">
                   <v-icon @click="hanldeImageDownload">mdi-download</v-icon>
-                  <v-icon class="ml-2" @click="toggleSharingDialog"
+                  <v-icon class="ml-2" @click.stop="toggleSharingDialog"
                     >mdi-share</v-icon
                   >
                 </div>
@@ -209,6 +149,7 @@ import {
 } from '../../queries'
 import { mapGetters, mapActions } from 'vuex'
 import Spinner from '../Shared/Spinner'
+import SocialSharing from '../Shared/SocialSharing'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { downloadImage } from '@/utils'
@@ -219,7 +160,8 @@ export default {
   name: 'Post',
   props: ['post_id'],
   components: {
-    Spinner
+    Spinner,
+    SocialSharing
   },
   data() {
     return {
@@ -247,9 +189,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['likePost','unLikePost']),
+    ...mapActions(['likePost','unLikePost', 'toggleSharingModal']),
     goToPrevPage() {
       this.$router.go(-1)
+    },
+    test() {
+      console.log('ehee')
     },
     async copyToClipBoard() {
       await navigator.clipboard.writeText(this.getPost.imgUrl)
@@ -262,7 +207,7 @@ export default {
       if (window.innerWidth > 500) this.imageDialog = !this.imageDialog
     },
     toggleSharingDialog() {
-      this.socialSharingDialog = true
+      this.toggleSharingModal()
     },
     checkIfOwnMessage(message) {
       if (!this.currentUser) return
@@ -340,7 +285,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'userFavorites']),
+    ...mapGetters(['currentUser', 'userFavorites', 'sharingModal']),
     cardWidth() {
       if (this.screenWidth < 960) return '450px'
       return  '100%'

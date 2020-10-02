@@ -25,6 +25,7 @@ export default new Vuex.Store({
     error: null,
     authError: null,
     searchResults: [],
+    sharingModal: false,
   },
   mutations: {
     SET_POSTS: (state, payload) => {
@@ -56,6 +57,9 @@ export default new Vuex.Store({
     },
     SET_SIGNUP_DIALOG: (state) => {
       state.signupDialogShown = !state.signupDialogShown
+    },
+    SET_SHARING_MODAL: (state) => {
+      state.sharingModal = !state.sharingModal
     },
   },
   actions: {
@@ -277,6 +281,9 @@ export default new Vuex.Store({
       // end apollo session
       await apolloClient.resetStore()
     },
+    toggleSharingModal: ({ commit }) => {
+      commit('SET_SHARING_MODAL')
+    },
   },
   modules: {},
   getters: {
@@ -288,5 +295,6 @@ export default new Vuex.Store({
     authError: (state) => state.authError,
     userFavorites: (state) => state.currentUser && state.currentUser.favorites,
     searchResults: (state) => state.searchResults,
+    sharingModal: (state) => state.sharingModal,
   },
 })
