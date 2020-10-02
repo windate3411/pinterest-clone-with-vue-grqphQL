@@ -22,11 +22,15 @@ moogoose
 async function addNewPosts() {
   try {
     const user = await User.findOne({ username: 'DannyWang' })
-    for (let i = 0; i < 30; i++) {
+    const response = await axios.get(
+      `https://picsum.photos/v2/list?page=4&limit=10`
+    )
+    const imageList = await response.data
+    for (let i = 0; i < imageList.length; i++) {
       const newPost = await Post.create({
         categories: randomCategories(categories),
         title: faker.random.words(2),
-        imgUrl: faker.image.abstract(940, 650),
+        imgUrl: response.data[i].download_url,
         description: faker.lorem.paragraph(4),
         createdBy: user._id,
       })
