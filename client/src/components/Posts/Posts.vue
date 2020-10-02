@@ -9,6 +9,22 @@
       v-if="!isLoading && infiniteScrollPosts"
       v-resize="onResize"
     >
+      <!-- copy to clipboard snackbar -->
+      <v-snackbar
+        v-model="clipboardMessageShown"
+        top
+        transition="fab-transition"
+        timeout="2000"
+        color="#5cb85c"
+      >
+        <h3 class="text-center">Copy to Clipboard!</h3>
+      </v-snackbar>
+      <SocialSharing
+        v-if="sharingModal"
+        :post="selectedPost"
+        :sharingModal="sharingModal"
+        @handleCopy="copyToClipBoard(selectedPost.imgUrl)"
+      />
       <div class="waterfall-wrapper">
         <v-row>
           <v-col
@@ -24,13 +40,19 @@
             >
               <v-img :src="post.imgUrl" class="rounded-lg"></v-img>
               <div class="overlay" @click.stop="goToPost(post._id)">
-                <h3>{{ post.title }}</h3>
-                <div>
-                  <v-icon class="mr-1" color="red">mdi-heart</v-icon>
-                  <span class="subheading mr-2">{{ post.likes }}</span>
-                  <span class="mr-1">·</span>
-                  <v-icon class="mr-1" color="white">mdi-chat</v-icon>
-                  <span class="subheading">{{ post.messages.length }}</span>
+                <div class="operators">
+                  <div class="icon-wrapper">
+                    <v-icon
+                      class="icon"
+                      @click.stop="hanldeImageDownload(post.imgUrl)"
+                      >mdi-download</v-icon
+                    >
+                  </div>
+                  <div class="icon-wrapper ml-1">
+                    <v-icon class="icon" @click.stop="handleSharing(post)"
+                      >mdi-share</v-icon
+                    >
+                  </div>
                 </div>
               </div>
             </div>
@@ -50,15 +72,19 @@
 </template>
 
 <script>
-import { INFINITE_SCROLL_POSTS } from "../../queries";
+import { INFINITE_SCROLL_POSTS } from "../../queries"
 import Spinner from '../Shared/Spinner.vue'
+import SocialSharing from '../Shared/SocialSharing'
+import { downloadImage } from '@/utils'
+import { mapGetters, mapActions } from 'vuex'
 
 const pageSize = 30;
 
 export default {
   name: "Posts",
   components: {
-    Spinner
+    Spinner,
+    SocialSharing
   },
   data() {
     return {
@@ -72,7 +98,9 @@ export default {
       imgMargin: 10,
       screenWidth: document.body.clientWidth,
       currentColsHeights: [],
-      isLoading: false
+      isLoading: false,
+      selectedPost:'',
+      clipboardMessageShown: false
     };
   },
   apollo: {
@@ -85,6 +113,18 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['toggleSharingModal']),
+    hanldeImageDownload(imgUrl) {
+      downloadImage(imgUrl)
+    },
+    handleSharing(post) {
+      this.selectedPost = post
+      this.toggleSharingModal()
+    },
+    async copyToClipBoard(imgUrl) {
+      await navigator.clipboard.writeText(imgUrl)
+      this.clipboardMessageShown = true
+    },
     showMorePosts() {
       if (!this.infiniteScrollPosts.hasMorePosts) return
       this.pageNum++;
@@ -167,8 +207,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['sharingModal']),
     renderList() {
       if (!this.infiniteScrollPosts) return []
+      this.selectedPost = this.infiniteScrollPosts.posts[0]
       return this.infiniteScrollPosts.posts
     },
   },
@@ -236,29 +278,35 @@ export default {
     color white
     display flex
     flex-direction column
-    align-items center
-    justify-content center
+    align-items flex-end
+    justify-content flex-end
     transition opacity 0.2s ease-in
     border-radius 8px
+
+    .operators
+      display flex
+      margin 5px
+
+      .icon-wrapper
+        height 32px
+        width 32px
+        background-color hsla(0,0%,100%,0.8)
+        border-radius 50%
+        position relative
+        margin 0
+        cursor pointer
+
+        .icon
+          font-size 16px
+          border-radius 50%
+          color #222
+          font-weight bold
+          position absolute
+          left 50%
+          top 50%
+          transform translate(-50%,-50%)
     
   &:hover
     .overlay
       opacity 1
-
-.waterfall-container
-  position relative
-  height 100%
-  width 100%
-
-  .waterfall-item
-    position absolute
-
-    .waterfall-item-img
-      height 100%
-      width 100%
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 </style>
