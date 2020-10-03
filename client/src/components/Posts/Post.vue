@@ -47,9 +47,8 @@
 
               <!-- img dialog -->
               <v-dialog v-model="imageDialog">
-                <v-card>
+                <v-card tile>
                   <img :src="getPost.imgUrl" />
-                  <!-- <v-img :src="getPost.imgUrl" height="80vh" contain></v-img> -->
                 </v-card>
               </v-dialog>
             </v-col>
@@ -297,7 +296,7 @@ export default {
 <style lang="stylus" scoped>
 
 img
-  object-fit contain
+  object-fit scale-down
   height 80vh
   width 100%
   overflow hidden

@@ -44,7 +44,7 @@ export default {
     return {
       isIntersecting: false,
       pageNum: 1,
-      numsPerPage: 2,
+      numsPerPage: 4,
       tab: ''
     }
   },
