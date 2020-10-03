@@ -1,4 +1,5 @@
-## Vinterest
+## ![logo](https://i.imgur.com/kdISdip.png)
+
 
 ## Table of Contents
 
@@ -11,38 +12,66 @@
 
 ## About the Project
 
-Vinterest is basically a pinterest inspired dumb-down clone which mainly built with
+### Vinterest is basically a pinterest inspired  clone which mainly built with
 
 - [vue.js](https://vuejs.org/)
 - [vuetify](https://vuetifyjs.com/en/)
 - [mongodb](https://www.mongodb.com/)
 - [mongodb atlas](https://www.mongodb.com/cloud/atlas/lp/try2?utm_source=google&utm_campaign=gs_apac_taiwan_search_brand_atlas_desktop&utm_term=mongodb%20atlas&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=6498554090&gclid=CjwKCAjwzIH7BRAbEiwAoDxxTvvPx8cLRWirp8tJAHTp8G_pNEnTBN0tFxHhCfuhvQ6DjKPuNNDpRBoCoX4QAvD_BwE)
+- [mongoose](https://mongoosejs.com/)
 - [graphql](https://graphql.org/)
 - [vue-apollo](https://apollo.vuejs.org/)
 - [json-web-token](https://www.npmjs.com/package/jsonwebtoken)
+- [firebase storage](https://firebase.google.com/?gclid=CjwKCAjwn9v7BRBqEiwAbq1Ey6VpK-qluGc_mVGww9YlenOn1hb3WFKlj2KHhsvi0witmqmOhwe3HxoCNu8QAvD_BwE)
 
-In this application
-**As a vititor you can**
+### And using the following package for further modification
+- [uuid](https://www.npmjs.com/package/uuid)
+- [bcrypt](https://www.npmjs.com/package/bcrypt)
+- [dayjs](https://day.js.org/)
+- [vue-social-sharing](https://www.npmjs.com/package/vue-social-sharing)
+- [vue-dropzone](https://rowanwins.github.io/vue-dropzone/docs/dist/#/installation)
 
----
+## Basic Functionaities
+
+*As a vititor you can*
 
 - sign in as a registered user
 - sign up as a new user
-- browse most recently uploaded posts(the top 5)
 - browse all posts on the platform
 - check out specific post detail
-- search for specific post(works for tag, title and description)
+- search for specific post(works for tag, title and description and user comments)
+- download post image
+- share this post through social media(Line, Twitter, Facebook & Email)
 
-**As a signin user you can**
+*As a signin user you can*
 
 - logout
 - like post
 - leave comments on certain post
-- view your own profile, which includes the posts you liked (**yet to be finished**)
+- view your own profile, which includes the posts you liked
+- add new post
 
-## Project Preview
+## Project Preview(Desktop)
 
-To be finished
+*Main page*
+![mainPage](https://i.imgur.com/PNyoL55.jpg)
+
+*Single Post*
+
+![singlePost visitor](https://i.imgur.com/5a6xLZu.png)
+
+*Login/Sign Up Modal*
+
+![login](https://i.imgur.com/99rvENz.jpg)
+
+*Add Post Modal*
+
+![add Post](https://i.imgur.com/BHVintY.png)
+
+*Profile Page*
+
+![Profile](https://i.imgur.com/znrtPlV.png)
+
 
 ## Getting Started
 
