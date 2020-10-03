@@ -31,7 +31,7 @@
 - [vue-social-sharing](https://www.npmjs.com/package/vue-social-sharing)
 - [vue-dropzone](https://rowanwins.github.io/vue-dropzone/docs/dist/#/installation)
 
-## Basic Functionaities
+## Basic Functionalities
 
 *As a vititor you can*
 
