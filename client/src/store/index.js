@@ -12,6 +12,7 @@ import {
   LIKE_POST,
   UNLIKE_POST,
   GET_POST,
+  INFINITE_SCROLL_POSTS,
 } from '../queries.js'
 import router from '../router'
 Vue.use(Vuex)
@@ -119,14 +120,20 @@ export default new Vuex.Store({
           variables: payload,
           update: (cache, { data: { addPost } }) => {
             // read the query to be updated
-            const data = cache.readQuery({ query: GET_POSTS })
+            const data = cache.readQuery({
+              query: INFINITE_SCROLL_POSTS,
+              variables: {
+                pageNum: 1,
+                pageSize: 30,
+              },
+            })
 
             // update data
-            data.getPosts.unshift(addPost)
+            data.infiniteScrollPosts.posts.unshift(addPost)
 
             // write updated data into query
             cache.writeQuery({
-              query: GET_POSTS,
+              query: INFINITE_SCROLL_POSTS,
               data,
             })
           },
@@ -141,7 +148,6 @@ export default new Vuex.Store({
           },
         })
         .then(({ data }) => {
-          console.log(data.addPost)
           commit('SET_LOADING', false)
         })
         .catch((err) => {

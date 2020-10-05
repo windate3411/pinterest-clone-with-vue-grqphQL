@@ -6,10 +6,15 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import VueSocialSharing from 'vue-social-sharing'
+import firebase from 'firebase'
+import { firebaseConfig } from './firebase'
 
 // import vue apollo and apollo-boost
 import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
+
+// initialize firebase
+firebase.initializeApp(firebaseConfig)
 
 // add global components
 import FormAlert from './components/Shared/FormAlert.vue'
