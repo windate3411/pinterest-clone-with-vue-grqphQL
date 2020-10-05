@@ -81,9 +81,19 @@ export default {
     handleCopy() {
       this.$emit('handleCopy')
     },
-    toggleSharingDialog() {
+    async toggleSharingDialog() {
+      const shareData = {
+        title: this.post.title,
+        description: this.post.description,
+        imgUrl: this.post.imgUrl,
+      }
+      if (navigator.canShare && navigator.canShare(shareData)) {
+        await navigator.share(shareData)
+        console.log('Post has been shared')
+        return
+      }
       this.toggleSharingModal()
-    }
+    },
   },
 }
 </script>
@@ -119,6 +129,4 @@ export default {
 
   .fa-envelope
     color #767676
-
-
 </style>
