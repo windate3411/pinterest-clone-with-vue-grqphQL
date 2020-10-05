@@ -138,6 +138,7 @@ export default {
   components: {
     vueDropzone: vue2Dropzone,
   },
+  inject: ['reload'],
   data() {
     return {
       isFormValid: true,
@@ -172,7 +173,6 @@ export default {
           categories: this.categories,
           creatorId: this.currentUser._id,
         })
-        this.$router.go(0)
       }
     },
     async afterComplete(file) {

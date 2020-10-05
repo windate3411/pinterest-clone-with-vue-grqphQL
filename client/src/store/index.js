@@ -148,6 +148,7 @@ export default new Vuex.Store({
           },
         })
         .then(({ data }) => {
+          router.go()
           commit('SET_LOADING', false)
         })
         .catch((err) => {

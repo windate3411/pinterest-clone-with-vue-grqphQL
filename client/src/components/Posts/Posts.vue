@@ -72,19 +72,19 @@
 </template>
 
 <script>
-import { INFINITE_SCROLL_POSTS } from "../../queries"
+import { INFINITE_SCROLL_POSTS } from '../../queries'
 import Spinner from '../Shared/Spinner.vue'
 import SocialSharing from '../Shared/SocialSharing'
 import { downloadImage } from '@/utils'
 import { mapGetters, mapActions } from 'vuex'
 
-const pageSize = 30;
+const pageSize = 30
 
 export default {
-  name: "Posts",
+  name: 'Posts',
   components: {
     Spinner,
-    SocialSharing
+    SocialSharing,
   },
   data() {
     return {
@@ -93,15 +93,15 @@ export default {
       observer: null,
       waterfallList: [],
       imgList: [],
-      imgWidth: "",
+      imgWidth: '',
       waterfallCols: 6,
       imgMargin: 10,
       screenWidth: document.body.clientWidth,
       currentColsHeights: [],
       isLoading: false,
-      selectedPost:'',
-      clipboardMessageShown: false
-    };
+      selectedPost: '',
+      clipboardMessageShown: false,
+    }
   },
   apollo: {
     infiniteScrollPosts: {
@@ -127,52 +127,59 @@ export default {
     },
     showMorePosts() {
       if (!this.infiniteScrollPosts.hasMorePosts) return
-      this.pageNum++;
+      this.pageNum++
       this.$apollo.queries.infiniteScrollPosts.fetchMore({
         variables: {
           pageNum: this.pageNum,
           pageSize,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
-          const newPosts = fetchMoreResult.infiniteScrollPosts.posts;
-          const hasMorePosts = fetchMoreResult.infiniteScrollPosts.hasMorePosts;
-          this.showMoreEnabled = hasMorePosts;
+          const newPosts = fetchMoreResult.infiniteScrollPosts.posts
+          const hasMorePosts = fetchMoreResult.infiniteScrollPosts.hasMorePosts
+          this.showMoreEnabled = hasMorePosts
           return {
             infiniteScrollPosts: {
               __typename: previousResult.infiniteScrollPosts.__typename,
               posts: [...previousResult.infiniteScrollPosts.posts, ...newPosts],
               hasMorePosts,
             },
-          };
+          }
         },
-      });
+      })
     },
-    onIntersect (entries, observer) {
-        if (entries[0].isIntersecting) {
-          this.handleScroll()
-        }
+    onIntersect(entries, observer) {
+      if (entries[0].isIntersecting) {
+        this.handleScroll()
+      }
     },
     handleScroll() {
       this.showMorePosts()
     },
     goToPost(postId) {
-      this.$router.push(`/posts/${postId}`);
+      this.$router.push(`/posts/${postId}`)
     },
     setImgWidth() {
-      this.imgWidth =((this.screenWidth - this.waterfallCols * this.imgMargin) / this.waterfallCols) * 0.9;
-      this.currentColsHeights = Array.from({ length: this.waterfallCols }).fill(0);
-      this.waterfallList = Array.from({ length: this.waterfallCols }).map(item=> [])
+      this.imgWidth =
+        ((this.screenWidth - this.waterfallCols * this.imgMargin) /
+          this.waterfallCols) *
+        0.9
+      this.currentColsHeights = Array.from({ length: this.waterfallCols }).fill(
+        0
+      )
+      this.waterfallList = Array.from({
+        length: this.waterfallCols,
+      }).map((item) => [])
     },
     processImgs(arr) {
       for (let i = 0; i < arr.length; i++) {
         const newImg = new Image()
         newImg.src = arr[i].imgUrl
         newImg.onload = () => {
-          const imgData = Object.assign({}, arr[i]);
-          newImg.height = (this.imgWidth / newImg.width) * newImg.height;
-          imgData.height = newImg.height;
-          this.setImgPosition(imgData);
-        };
+          const imgData = Object.assign({}, arr[i])
+          newImg.height = (this.imgWidth / newImg.width) * newImg.height
+          imgData.height = newImg.height
+          this.setImgPosition(imgData)
+        }
       }
     },
     setImgPosition(imgData) {
@@ -182,14 +189,14 @@ export default {
         imgMargin,
         waterfallList,
         currentColsHeights,
-      } = this;
-      const minIndex = this.findMinHeightColIndex();
+      } = this
+      const minIndex = this.findMinHeightColIndex()
       this.waterfallList[minIndex].push(imgData)
-      this.currentColsHeights[minIndex] += imgData.height + imgMargin;
+      this.currentColsHeights[minIndex] += imgData.height + imgMargin
     },
     findMinHeightColIndex() {
-      const minHeight = Math.min(...this.currentColsHeights);
-      return this.currentColsHeights.indexOf(minHeight);
+      const minHeight = Math.min(...this.currentColsHeights)
+      return this.currentColsHeights.indexOf(minHeight)
     },
     onResize() {
       this.screenWidth = window.innerWidth
@@ -201,10 +208,10 @@ export default {
     },
     showSpinner() {
       this.isLoading = true
-      setTimeout(()=>{
+      setTimeout(() => {
         this.isLoading = false
-      },500)
-    }
+      }, 500)
+    },
   },
   computed: {
     ...mapGetters(['sharingModal']),
@@ -220,21 +227,20 @@ export default {
   watch: {
     screenWidth(val) {
       this.showSpinner()
-      if (val <= 600) return this.waterfallCols = 2
-      if (val <= 960) return this.waterfallCols = 4
+      if (val <= 600) return (this.waterfallCols = 2)
+      if (val <= 960) return (this.waterfallCols = 4)
       this.waterfallCols = 6
     },
-    renderList(val,oldVal) {
-      const diffArr = val.filter(item => !oldVal.includes(item))
+    renderList(val, oldVal) {
+      const diffArr = val.filter((item) => !oldVal.includes(item))
       this.processImgs(diffArr)
     },
     waterfallCols(val) {
       this.recalculateCols(val)
-    }
+    },
   },
-};
+}
 </script>
-
 
 <style lang="stylus" scoped>
 .waterfall-wrapper
@@ -264,7 +270,7 @@ export default {
   display flex
   justify-content center
   margin-bottom 24px
-  
+
   .overlay
     background-color rgba(0,0,0,0.3)
     opacity 0
@@ -305,7 +311,7 @@ export default {
           left 50%
           top 50%
           transform translate(-50%,-50%)
-    
+
   &:hover
     .overlay
       opacity 1

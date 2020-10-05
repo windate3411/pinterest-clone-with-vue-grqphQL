@@ -3,21 +3,39 @@
     <Navbar class="demo" />
     <v-main>
       <transition name="fade">
-        <router-view></router-view>
+        <router-view v-if="isReloadAlive"></router-view>
       </transition>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import Navbar from "./components/Navbar.vue";
+import Navbar from './components/Navbar.vue'
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     Navbar,
   },
-};
+  provide() {
+    return {
+      reload: this.reload,
+    }
+  },
+  data() {
+    return {
+      isReloadAlive: true,
+    }
+  },
+  methods: {
+    reload() {
+      this.isReloadAlive = false
+      this.$nextTick(function() {
+        this.isReloadAlive = true
+      })
+    },
+  },
+}
 </script>
 
 <style lang="stylus" scoped>
