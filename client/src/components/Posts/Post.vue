@@ -39,6 +39,8 @@
                     v-bind="attrs"
                     v-on="on"
                     height="100%"
+                    max-height="500px"
+                    contain
                     @click="toggleImgaeDialog"
                     class="rounded-xl mx-3"
                   ></v-img>
@@ -160,7 +162,7 @@ export default {
   props: ['post_id'],
   components: {
     Spinner,
-    SocialSharing
+    SocialSharing,
   },
   data() {
     return {
@@ -188,7 +190,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['likePost','unLikePost', 'toggleSharingModal']),
+    ...mapActions(['likePost', 'unLikePost', 'toggleSharingModal']),
     goToPrevPage() {
       this.$router.go(-1)
     },
@@ -227,13 +229,13 @@ export default {
     handleLikePost() {
       this.likePost({
         post_id: this.post_id,
-        username: this.currentUser.username
+        username: this.currentUser.username,
       })
     },
     handleUnLikePost() {
       this.unLikePost({
         post_id: this.post_id,
-        username: this.currentUser.username
+        username: this.currentUser.username,
       })
     },
     handleAddPosrMessage() {
@@ -281,14 +283,14 @@ export default {
     },
     onResize() {
       this.screenWidth = window.innerWidth
-    }
+    },
   },
   computed: {
     ...mapGetters(['currentUser', 'userFavorites', 'sharingModal']),
     cardWidth() {
       if (this.screenWidth < 960) return '450px'
-      return  '100%'
-    }
+      return '100%'
+    },
   },
 }
 </script>
@@ -296,7 +298,8 @@ export default {
 <style lang="stylus" scoped>
 
 img
-  object-fit scale-down
+  object-fit contain
+  display block
   height 80vh
   width 100%
   overflow hidden
