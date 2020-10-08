@@ -6,7 +6,8 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import VueSocialSharing from 'vue-social-sharing'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/storage'
 import { firebaseConfig } from './firebase'
 
 // import vue apollo and apollo-boost

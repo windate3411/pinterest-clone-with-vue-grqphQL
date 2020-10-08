@@ -127,7 +127,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/storage'
 import vue2Dropzone from 'vue2-dropzone'
 import axios from 'axios'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
