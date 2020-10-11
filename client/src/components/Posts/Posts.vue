@@ -25,6 +25,9 @@
         :sharingModal="sharingModal"
         @handleCopy="copyToClipBoard(selectedPost.imgUrl)"
       />
+
+      <!-- FloatingButton -->
+      <FloatingButton />
       <div class="waterfall-wrapper">
         <v-row>
           <v-col
@@ -75,6 +78,7 @@
 import { INFINITE_SCROLL_POSTS } from '../../queries'
 import Spinner from '../Shared/Spinner.vue'
 import SocialSharing from '../Shared/SocialSharing'
+import FloatingButton from '../Shared/FloatingButton'
 import { downloadImage } from '@/utils'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -85,6 +89,7 @@ export default {
   components: {
     Spinner,
     SocialSharing,
+    FloatingButton
   },
   data() {
     return {
