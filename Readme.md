@@ -60,7 +60,7 @@
 
 *Main page resizing(recalculate waterwall cols when resizing)*
 
-![resize](https://i.imgur.com/x2rVCt6.gif)
+![resize](https://i.imgur.com/zLlK78z.gif)
 
 
 *Single Post*
