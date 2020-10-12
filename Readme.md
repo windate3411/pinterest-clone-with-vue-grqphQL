@@ -1,3 +1,5 @@
+# Readme.md
+
 ## ![logo](https://i.imgur.com/kdISdip.png)
 
 
@@ -31,7 +33,7 @@
 - [vue-social-sharing](https://www.npmjs.com/package/vue-social-sharing)
 - [vue-dropzone](https://rowanwins.github.io/vue-dropzone/docs/dist/#/installation)
 
-## Basic Functionalities
+## Basic Functionaities
 
 *As a vititor you can*
 
@@ -56,9 +58,19 @@
 *Main page*
 ![mainPage](https://i.imgur.com/PNyoL55.jpg)
 
+*Main page resizing(recalculate waterwall cols when resizing)*
+
+![resize](https://i.imgur.com/x2rVCt6.gif)
+
+
 *Single Post*
 
 ![singlePost visitor](https://i.imgur.com/5a6xLZu.png)
+
+*Download and share*
+
+![Download and share](https://i.imgur.com/fUCsEHC.gif)
+
 
 *Login/Sign Up Modal*
 
@@ -66,7 +78,7 @@
 
 *Add Post Modal*
 
-![add Post](https://i.imgur.com/BHVintY.png)
+![add Post](https://i.imgur.com/IaR011Z.gif)
 
 *Profile Page*
 
